@@ -10,7 +10,10 @@ import 'libloc.dart';
 class UserSelector extends StatelessWidget {
   final void Function(AppUser) onUserSelected;
 
-  UserSelector(this.onUserSelected);
+  UserSelector(
+    this.onUserSelected, {
+    Key? key,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
