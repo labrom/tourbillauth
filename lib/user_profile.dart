@@ -15,7 +15,10 @@ import 'sign_in_manager.dart';
 class UserProfile extends StatefulWidget implements PreferredSizeWidget {
   final String? settingsRouteName;
 
-  UserProfile({this.settingsRouteName});
+  UserProfile({
+    this.settingsRouteName,
+    Key? key,
+  }) : super(key: key);
 
   @override
   State<StatefulWidget> createState() => _UserProfileState();
@@ -33,7 +36,7 @@ class _UserProfileState extends State<UserProfile> {
     return Align(
       alignment: Alignment.bottomRight,
       child: Padding(
-        padding: EdgeInsets.only(right: 8),
+        padding: const EdgeInsets.only(right: 8),
         child: TextButton(
           onPressed: _toggleMenu,
           child: signIn.signedIn
