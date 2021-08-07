@@ -15,7 +15,7 @@ import 'sign_in_manager.dart';
 class UserProfile extends StatefulWidget implements PreferredSizeWidget {
   final String? settingsRouteName;
 
-  UserProfile({
+  const UserProfile({
     this.settingsRouteName,
     Key? key,
   }) : super(key: key);

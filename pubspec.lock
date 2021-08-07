@@ -311,7 +311,7 @@ packages:
     description:
       path: "."
       ref: HEAD
-      resolved-ref: eb386860e1127d2ea5941947a4a00c28f1f0ec9a
+      resolved-ref: e348baf060281cd7a073edb8e4c76eedcee354fc
       url: "https://github.com/labrom/tourbillon.git"
     source: git
     version: "1.0.0+1"
