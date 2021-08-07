@@ -1,7 +1,6 @@
 name: tourbillauth
-description: A new Flutter package project.
-version: 0.0.1
-homepage:
+description: A framework that provides building blocks for assembling Flutter apps that require user management
+version: 1.0.0+1
 
 environment:
   sdk: ">=2.12.0 <3.0.0"
@@ -19,6 +18,7 @@ dependencies:
 dev_dependencies:
   flutter_test:
     sdk: flutter
+  fake_cloud_firestore:
   flutter_lints: ^1.0.0
   tourbillon:
     git:
