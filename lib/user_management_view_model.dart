@@ -33,7 +33,7 @@ class UserRole {
     this.userEmail, {
     String? userDisplay,
     this.role,
-  }) : this.userDisplay = userDisplay ?? userEmail;
+  }) : userDisplay = userDisplay ?? userEmail;
 }
 
 class InviteRole {

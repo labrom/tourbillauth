@@ -49,16 +49,14 @@ class _UserProfileState extends State<UserProfile> {
                       child: Container(
                         width: 24,
                         height: 24,
-                        decoration: signIn.photoUrl != null
-                            ? BoxDecoration(
-                                shape: BoxShape.circle,
-                                image: DecorationImage(
-                                  image: NetworkImage(
-                                    signIn.photoUrl,
-                                  ),
-                                ),
-                              )
-                            : null,
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          image: DecorationImage(
+                            image: NetworkImage(
+                              signIn.photoUrl,
+                            ),
+                          ),
+                        ),
                       ),
                     ),
                   ],
