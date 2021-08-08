@@ -12,6 +12,8 @@ abstract class UserManagementViewModel extends ChangeNotifier {
 
   List<InviteRole> listInvites({String? resource});
 
+  List<EmailRole> listUsersAndInvites({String? resource});
+
   Future<void> addUser(String userId,
       {required String email, String? resource, String? role});
 
@@ -22,35 +24,41 @@ abstract class UserManagementViewModel extends ChangeNotifier {
   Future<void> removeInvite(String email, {String? resource});
 }
 
-class UserRole {
+mixin EmailRole {
+  late String userEmail;
+  late String? role;
+}
+
+class UserRole with EmailRole {
   final String userId;
-  final String userEmail;
   final String userDisplay;
-  final String? role;
 
   UserRole(
     this.userId,
-    this.userEmail, {
+    String userEmail, {
     String? userDisplay,
-    this.role,
-  }) : userDisplay = userDisplay ?? userEmail;
+    String? role,
+  }) : userDisplay = userDisplay ?? userEmail {
+    this.userEmail = userEmail;
+    this.role = role;
+  }
 }
 
-class InviteRole {
-  final String userEmail;
-  final String? role;
-
+class InviteRole with EmailRole {
   InviteRole(
-    this.userEmail, {
-    this.role,
-  });
+    String userEmail, {
+    String? role,
+  }) {
+    this.userEmail = userEmail;
+    this.role = role;
+  }
 }
 
 /// An implementation of [UserManagementViewModel] that stores users in a
 /// Firestore table, and resource user roles in an array field in the
 /// resource document.
 ///
-/// Adding user or invitations:
+/// Adding users or invitations:
 /// Users are stored in the `users` table, where document IDs are the user's
 /// UID. Documents contain a mandatory `email` field and an optional `role`
 /// field.
@@ -72,8 +80,16 @@ class FirestoreUserManagementViewModel
   final DataProvider _inviteProvider;
 
   FirestoreUserManagementViewModel(this._context)
-      : _userProvider = DataProvider(_context, 'users'),
-        _inviteProvider = DataProvider(_context, 'invites') {
+      : _userProvider = DataProvider(
+          _context,
+          'users',
+          queryModifier: (query) => query.orderBy('email'),
+        ),
+        _inviteProvider = DataProvider(
+          _context,
+          'invites',
+          queryModifier: (query) => query.orderBy(FieldPath.documentId),
+        ) {
     _userProvider.addListener(() => notifyListeners());
     _inviteProvider.addListener(() => notifyListeners());
   }
@@ -129,6 +145,18 @@ class FirestoreUserManagementViewModel
             role: doc.getOrNull('role'),
           ))
       .toList();
+
+  @override
+  List<EmailRole> listUsersAndInvites({String? resource}) {
+    var users = listUsers(resource: resource);
+    var userEmails = users.map((user) => user.userEmail).toList();
+    var usersAndInvites = List<EmailRole>.from(users);
+    usersAndInvites.addAll(listInvites(resource: resource)
+        .where((invite) => !userEmails.contains(invite.userEmail)));
+    usersAndInvites
+        .sort((email1, email2) => email1.userEmail.compareTo(email2.userEmail));
+    return usersAndInvites;
+  }
 
   @override
   Future<void> removeInvite(String email, {String? resource}) async {
