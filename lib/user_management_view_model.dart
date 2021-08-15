@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/widgets.dart';
+import 'package:tourbillauth/app_user.dart';
 import 'package:tourbillon/data_provider.dart';
 import 'package:tourbillon/firestore.dart';
 
@@ -8,11 +9,11 @@ abstract class UserManagementViewModel extends ChangeNotifier {
   factory UserManagementViewModel.firestore(BuildContext context) =>
       FirestoreUserManagementViewModel(context);
 
-  List<UserRole> listUsers({String? resource});
+  List<AppUserRole> listUsers({String? resource});
 
   List<InviteRole> listInvites({String? resource});
 
-  List<EmailRole> listUsersAndInvites({String? resource});
+  List<UserRole> listUsersAndInvites({String? resource});
 
   Future<void> addUser(String userId,
       {required String email, String? resource, String? role});
@@ -24,27 +25,31 @@ abstract class UserManagementViewModel extends ChangeNotifier {
   Future<void> removeInvite(String email, {String? resource});
 }
 
-mixin EmailRole {
+mixin UserRole {
   late String userEmail;
   late String? role;
+  String? get userId;
 }
 
-class UserRole with EmailRole {
-  final String userId;
-  final String userDisplay;
-
-  UserRole(
-    this.userId,
+class AppUserRole extends AppUser with UserRole {
+  AppUserRole(
+    String userId,
     String userEmail, {
     String? userDisplay,
     String? role,
-  }) : userDisplay = userDisplay ?? userEmail {
+  }) : super(
+            uid: userId,
+            email: userEmail,
+            description: userDisplay ?? userEmail) {
     this.userEmail = userEmail;
     this.role = role;
   }
+
+  @override
+  String? get userId => uid;
 }
 
-class InviteRole with EmailRole {
+class InviteRole with UserRole {
   InviteRole(
     String userEmail, {
     String? role,
@@ -52,6 +57,9 @@ class InviteRole with EmailRole {
     this.userEmail = userEmail;
     this.role = role;
   }
+
+  @override
+  String? get userId => null;
 }
 
 /// An implementation of [UserManagementViewModel] that stores users in a
@@ -137,8 +145,8 @@ class FirestoreUserManagementViewModel
       .toList();
 
   @override
-  List<UserRole> listUsers({String? resource}) => _userProvider.data
-      .map((doc) => UserRole(
+  List<AppUserRole> listUsers({String? resource}) => _userProvider.data
+      .map((doc) => AppUserRole(
             doc.id,
             doc.get('email'),
             userDisplay: doc.getOrNull('display'),
@@ -147,10 +155,10 @@ class FirestoreUserManagementViewModel
       .toList();
 
   @override
-  List<EmailRole> listUsersAndInvites({String? resource}) {
+  List<UserRole> listUsersAndInvites({String? resource}) {
     var users = listUsers(resource: resource);
     var userEmails = users.map((user) => user.userEmail).toList();
-    var usersAndInvites = List<EmailRole>.from(users);
+    var usersAndInvites = List<UserRole>.from(users);
     usersAndInvites.addAll(listInvites(resource: resource)
         .where((invite) => !userEmails.contains(invite.userEmail)));
     usersAndInvites
