@@ -7,6 +7,8 @@ import 'directory_manager.dart';
 import 'libloc.dart';
 
 /// A widget that allows to search for and select a user.
+///
+/// This widget requires a [DirectoryManager] to be present in the context.
 class UserSelector extends StatelessWidget {
   final void Function(AppUser) onUserSelected;
 
