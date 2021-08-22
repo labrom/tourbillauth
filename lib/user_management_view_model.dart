@@ -1,8 +1,10 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/widgets.dart';
-import 'package:tourbillauth/app_user.dart';
+import 'package:tourbillon/cache.dart';
 import 'package:tourbillon/data_provider.dart';
 import 'package:tourbillon/firestore.dart';
+
+import 'app_user.dart';
 
 abstract class UserManagementViewModel extends ChangeNotifier {
   /// Creates a [FirestoreUserManagementViewModel].
@@ -15,14 +17,14 @@ abstract class UserManagementViewModel extends ChangeNotifier {
 
   List<UserRole> listUsersAndInvites({String? resource});
 
-  Future<void> addUser(String userId,
+  void addUser(String userId,
       {required String email, String? resource, String? role});
 
-  Future<void> addInvite(String email, {String? resource, String? role});
+  void addInvite(String email, {String? resource, String? role});
 
-  Future<void> removeUser(String userId, {String? resource});
+  void removeUser(String userId, {String? resource});
 
-  Future<void> removeInvite(String email, {String? resource});
+  void removeInvite(String email, {String? resource});
 }
 
 mixin UserRole {
@@ -86,6 +88,7 @@ class FirestoreUserManagementViewModel
   final BuildContext _context;
   final DataProvider _userProvider;
   final DataProvider _inviteProvider;
+  final Cache<DocumentSnapshot> _resourceCache = Cache();
 
   FirestoreUserManagementViewModel(this._context)
       : _userProvider = DataProvider(
@@ -103,8 +106,8 @@ class FirestoreUserManagementViewModel
   }
 
   @override
-  Future<void> addInvite(String email, {String? resource, String? role}) async {
-    await firestoreProvider(_context)
+  void addInvite(String email, {String? resource, String? role}) {
+    var addInvite = firestoreProvider(_context)
         .instance
         .collection('invites')
         .doc(email)
@@ -112,16 +115,24 @@ class FirestoreUserManagementViewModel
       'role': role,
     });
     if (resource != null) {
-      await FirebaseFirestore.instance.doc(resource).update({
-        'roles.$email': role,
+      Future.wait([
+        addInvite,
+        FirebaseFirestore.instance.doc(resource).update({
+          'roles.$email': role,
+        }),
+      ]).then((_) {
+        _resourceCache.setStale(resource);
+        notifyListeners();
       });
+    } else {
+      addInvite.then((_) => notifyListeners());
     }
   }
 
   @override
-  Future<void> addUser(String userId,
-      {required String email, String? resource, String? role}) async {
-    await firestoreProvider(_context)
+  void addUser(String userId,
+      {required String email, String? resource, String? role}) {
+    var addUser = firestoreProvider(_context)
         .instance
         .collection('users')
         .doc(userId)
@@ -130,29 +141,76 @@ class FirestoreUserManagementViewModel
       'role': role,
     });
     if (resource != null) {
-      await FirebaseFirestore.instance.doc(resource).update({
-        'roles.$userId': role,
+      Future.wait([
+        addUser,
+        FirebaseFirestore.instance.doc(resource).update({
+          'roles.$userId': role,
+        }),
+      ]).then((_) {
+        _resourceCache.setStale(resource);
+        notifyListeners();
       });
+    } else {
+      addUser.then((_) => notifyListeners());
     }
   }
 
   @override
-  List<InviteRole> listInvites({String? resource}) => _inviteProvider.data
-      .map((doc) => InviteRole(
-            doc.id,
-            role: doc.getOrNull('role'),
-          ))
-      .toList();
+  List<InviteRole> listInvites({String? resource}) {
+    var invites = _inviteProvider.data
+        .map((doc) => InviteRole(
+              doc.id,
+              role: doc.getOrNull('role'),
+            ))
+        .toList();
+
+    if (resource != null) {
+      var doc = _resourceCache[resource];
+      if (doc != null) {
+        var resourceUsers = doc.getOrDefault<Map<String, dynamic>>('roles', {});
+        invites
+            .removeWhere((user) => !resourceUsers.containsKey(user.userEmail));
+        for (var invite in invites) {
+          invite.role = resourceUsers[invite.userEmail];
+        }
+      } else {
+        firestoreProvider(_context).instance.doc(resource).get().then((doc) {
+          _resourceCache[resource] = doc;
+          notifyListeners();
+        });
+      }
+    }
+    return invites;
+  }
 
   @override
-  List<AppUserRole> listUsers({String? resource}) => _userProvider.data
-      .map((doc) => AppUserRole(
-            doc.id,
-            doc.get('email'),
-            userDisplay: doc.getOrNull('display'),
-            role: doc.getOrNull('role'),
-          ))
-      .toList();
+  List<AppUserRole> listUsers({String? resource}) {
+    var users = _userProvider.data
+        .map((doc) => AppUserRole(
+              doc.id,
+              doc.get('email'),
+              userDisplay: doc.getOrNull('display'),
+              role: doc.getOrNull('role'),
+            ))
+        .toList();
+
+    if (resource != null) {
+      var doc = _resourceCache[resource];
+      if (doc != null) {
+        var resourceUsers = doc.getOrDefault<Map<String, dynamic>>('roles', {});
+        users.removeWhere((user) => !resourceUsers.containsKey(user.uid));
+        for (var user in users) {
+          user.role = resourceUsers[user.uid];
+        }
+      } else {
+        firestoreProvider(_context).instance.doc(resource).get().then((doc) {
+          _resourceCache[resource] = doc;
+          notifyListeners();
+        });
+      }
+    }
+    return users;
+  }
 
   @override
   List<UserRole> listUsersAndInvites({String? resource}) {
@@ -167,22 +225,14 @@ class FirestoreUserManagementViewModel
   }
 
   @override
-  Future<void> removeInvite(String email, {String? resource}) async {
-    await firestoreProvider(_context)
-        .instance
-        .collection('invites')
-        .doc(email)
-        .delete();
+  void removeInvite(String email, {String? resource}) {
+    _inviteProvider.delete(email);
     // Expect resource roles to be automatically deleted with a Firestore function.
   }
 
   @override
-  Future<void> removeUser(String userId, {String? resource}) async {
-    await firestoreProvider(_context)
-        .instance
-        .collection('users')
-        .doc(userId)
-        .delete();
+  void removeUser(String userId, {String? resource}) {
+    _userProvider.delete(userId);
     // Expect resource roles to be automatically deleted with a Firestore function.
   }
 }

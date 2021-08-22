@@ -6,82 +6,112 @@ import 'package:tourbillon/fake_firestore.dart';
 import 'package:tourbillon/firestore.dart';
 
 void main() {
-  testWidgets('List users/invites', (tester) async {
-    var fakeFirestoreWrapper = FakeFirestoreWrapper();
-    await fakeFirestoreWrapper.fake.collection('users').doc('user2').set({
-      'email': 'user2@my.org',
-      'role': 'guest',
+  group('List users invites', () {
+    testWidgets('with roles, without resource', (tester) async {
+      var firestore = FakeFirestoreWrapper();
+      await firestore.fake.collection('users').doc('user2').set({
+        'email': 'user2@my.org',
+        'role': 'guest',
+      });
+      await firestore.fake.collection('users').doc('user1').set({
+        'email': 'user1@my.org',
+        'role': 'admin',
+      });
+      await firestore.fake.collection('invites').doc('user2@my.org').set({
+        'role': 'guest',
+      });
+      await firestore.fake.collection('invites').doc('user1@my.org').set({
+        'role': 'admin',
+      });
+      late UserManagementViewModel viewModel;
+      await tester.pumpWidget(Provider<FirestoreInterface>.value(
+        value: firestore,
+        child: ChangeNotifierProvider(
+          create: (context) {
+            viewModel = UserManagementViewModel.firestore(context);
+            return viewModel;
+          },
+          lazy: false,
+          child: Container(),
+        ),
+      ));
+      var users = viewModel.listUsers();
+      var invites = viewModel.listInvites();
+      expect(users.length, equals(2));
+      expect(invites.length, equals(2));
+      expect(users[0].userEmail, equals('user1@my.org'));
+      expect(users[0].role, equals('admin'));
+      expect(invites[1].userEmail, equals('user2@my.org'));
+      expect(invites[1].role, equals('guest'));
     });
-    await fakeFirestoreWrapper.fake.collection('users').doc('user1').set({
-      'email': 'user1@my.org',
-      'role': 'admin',
+    testWidgets('users & invites, without roles, without resource',
+        (tester) async {
+      var firestore = FakeFirestoreWrapper();
+      await firestore.fake.collection('users').doc('user4').set({
+        'email': 'user4@my.org',
+      });
+      await firestore.fake.collection('users').doc('user2').set({
+        'email': 'user2@my.org',
+      });
+      await firestore.fake.collection('invites').doc('user2@my.org').set({});
+      await firestore.fake.collection('invites').doc('user3@my.org').set({});
+      late UserManagementViewModel viewModel;
+      await tester.pumpWidget(Provider<FirestoreInterface>.value(
+        value: firestore,
+        child: ChangeNotifierProvider(
+          create: (context) {
+            viewModel = UserManagementViewModel.firestore(context);
+            return viewModel;
+          },
+          lazy: false,
+          child: Container(),
+        ),
+      ));
+      var usersInvites = viewModel.listUsersAndInvites();
+      expect(usersInvites.length, equals(3));
+      expect(usersInvites[0].userEmail, equals('user2@my.org'));
+      expect(usersInvites[1].userEmail, equals('user3@my.org'));
+      expect(usersInvites[2].userEmail, equals('user4@my.org'));
     });
-    await fakeFirestoreWrapper.fake
-        .collection('invites')
-        .doc('user2@my.org')
-        .set({
-      'role': 'guest',
-    });
-    await fakeFirestoreWrapper.fake
-        .collection('invites')
-        .doc('user1@my.org')
-        .set({
-      'role': 'admin',
-    });
-    late UserManagementViewModel viewModel;
-    await tester.pumpWidget(Provider<FirestoreInterface>.value(
-      value: fakeFirestoreWrapper,
-      child: ChangeNotifierProvider(
-        create: (context) {
-          viewModel = UserManagementViewModel.firestore(context);
-          return viewModel;
+    testWidgets('with roles, with resource', (tester) async {
+      var firestore = FakeFirestoreWrapper();
+      await firestore.fake.collection('users').doc('user1').set({
+        'email': 'user1@my.org',
+        'role': 'admin',
+      });
+      await firestore.fake.collection('invites').doc('user2@my.org').set({
+        'role': 'guest',
+      });
+      await firestore.fake.collection('resources').doc('resource1').set({
+        'roles': {
+          'user1': 'editor',
+          'user2@my.org': 'reader',
         },
-        lazy: false,
-        child: Container(),
-      ),
-    ));
-    expect(viewModel.listUsers().length, equals(2));
-    expect(viewModel.listInvites().length, equals(2));
-    expect(viewModel.listUsers()[0].userEmail, equals('user1@my.org'));
-    expect(viewModel.listUsers()[0].role, equals('admin'));
-    expect(viewModel.listInvites()[1].userEmail, equals('user2@my.org'));
-    expect(viewModel.listInvites()[1].role, equals('guest'));
-  });
-  testWidgets('List users and invites', (tester) async {
-    var fakeFirestoreWrapper = FakeFirestoreWrapper();
-    await fakeFirestoreWrapper.fake.collection('users').doc('user4').set({
-      'email': 'user4@my.org',
+      });
+      late UserManagementViewModel viewModel;
+      await tester.pumpWidget(Provider<FirestoreInterface>.value(
+        value: firestore,
+        child: ChangeNotifierProvider(
+          create: (context) {
+            viewModel = UserManagementViewModel.firestore(context);
+            return viewModel;
+          },
+          lazy: false,
+          child: Container(),
+        ),
+      ));
+      viewModel.listUsers(resource: 'resources/resource1');
+      viewModel.listInvites(resource: 'resources/resource1');
+      await tester.pump();
+      var users = viewModel.listUsers(resource: 'resources/resource1');
+      var invites = viewModel.listInvites(resource: 'resources/resource1');
+      expect(users.length, equals(1));
+      expect(invites.length, equals(1));
+      expect(users.first.userEmail, equals('user1@my.org'));
+      expect(users.first.role, equals('editor'));
+      expect(invites.first.userEmail, equals('user2@my.org'));
+      expect(invites.first.role, equals('reader'));
     });
-    await fakeFirestoreWrapper.fake.collection('users').doc('user2').set({
-      'email': 'user2@my.org',
-    });
-    await fakeFirestoreWrapper.fake
-        .collection('invites')
-        .doc('user2@my.org')
-        .set({});
-    await fakeFirestoreWrapper.fake
-        .collection('invites')
-        .doc('user3@my.org')
-        .set({});
-    late UserManagementViewModel viewModel;
-    await tester.pumpWidget(Provider<FirestoreInterface>.value(
-      value: fakeFirestoreWrapper,
-      child: ChangeNotifierProvider(
-        create: (context) {
-          viewModel = UserManagementViewModel.firestore(context);
-          return viewModel;
-        },
-        lazy: false,
-        child: Container(),
-      ),
-    ));
-    expect(viewModel.listUsersAndInvites().length, equals(3));
-    expect(
-        viewModel.listUsersAndInvites()[0].userEmail, equals('user2@my.org'));
-    expect(
-        viewModel.listUsersAndInvites()[1].userEmail, equals('user3@my.org'));
-    expect(
-        viewModel.listUsersAndInvites()[2].userEmail, equals('user4@my.org'));
   });
   testWidgets('Add users/invites', (tester) async {
     var fakeFirestoreWrapper = FakeFirestoreWrapper();
@@ -97,17 +127,20 @@ void main() {
         child: Container(),
       ),
     ));
-    await viewModel.addUser('user1', email: 'user1@my.org', role: 'admin');
-    await viewModel.addUser('user2', email: 'user2@my.org', role: 'guest');
-    await viewModel.addInvite('user1@my.org', role: 'admin');
-    await viewModel.addInvite('user2@my.org', role: 'guest');
+    viewModel.addUser('user1', email: 'user1@my.org', role: 'admin');
+    viewModel.addUser('user2', email: 'user2@my.org', role: 'guest');
+    viewModel.addInvite('user1@my.org', role: 'admin');
+    viewModel.addInvite('user2@my.org', role: 'guest');
     await fakeFirestoreWrapper.fake.flush();
-    expect(viewModel.listUsers().length, equals(2));
+    await tester.pump();
+    var users = viewModel.listUsers();
+    var invites = viewModel.listInvites();
+    expect(users.length, equals(2));
     expect(viewModel.listInvites().length, equals(2));
-    expect(viewModel.listUsers()[0].userEmail, equals('user1@my.org'));
-    expect(viewModel.listUsers()[0].role, equals('admin'));
-    expect(viewModel.listInvites()[1].userEmail, equals('user2@my.org'));
-    expect(viewModel.listInvites()[1].role, equals('guest'));
+    expect(users[0].userEmail, equals('user1@my.org'));
+    expect(users[0].role, equals('admin'));
+    expect(invites[1].userEmail, equals('user2@my.org'));
+    expect(invites[1].role, equals('guest'));
   });
   testWidgets('Remove users/invites', (tester) async {
     var fakeFirestoreWrapper = FakeFirestoreWrapper();
@@ -143,14 +176,16 @@ void main() {
         child: Container(),
       ),
     ));
-    await viewModel.removeUser('user2');
-    await viewModel.removeInvite('user1@my.org');
+    viewModel.removeUser('user2');
+    viewModel.removeInvite('user1@my.org');
     await fakeFirestoreWrapper.fake.flush();
-    expect(viewModel.listUsers().length, equals(1));
-    expect(viewModel.listInvites().length, equals(1));
-    expect(viewModel.listUsers()[0].userEmail, equals('user1@my.org'));
-    expect(viewModel.listUsers()[0].role, equals('admin'));
-    expect(viewModel.listInvites()[0].userEmail, equals('user2@my.org'));
-    expect(viewModel.listInvites()[0].role, equals('guest'));
+    var users = viewModel.listUsers();
+    var invites = viewModel.listInvites();
+    expect(users.length, equals(1));
+    expect(invites.length, equals(1));
+    expect(users[0].userEmail, equals('user1@my.org'));
+    expect(users[0].role, equals('admin'));
+    expect(invites[0].userEmail, equals('user2@my.org'));
+    expect(invites[0].role, equals('guest'));
   });
 }
