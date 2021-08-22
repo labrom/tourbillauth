@@ -15,6 +15,12 @@ class SignInManager extends ChangeNotifier {
     Firebase.initializeApp();
   }
 
+  factory SignInManager.fakeUser({
+    required String userId,
+    required String userEmail,
+  }) =>
+      _FakeSignInManager(userId: userId, userEmail: userEmail);
+
   bool get signedIn => _signedIn;
 
   /// The Google user ID.
@@ -108,5 +114,59 @@ class SignInManager extends ChangeNotifier {
 
     _signedIn = true;
     notifyListeners();
+  }
+}
+
+class _FakeSignInManager with ChangeNotifier implements SignInManager {
+  @override
+  final String userId;
+
+  @override
+  final String userEmail;
+
+  _FakeSignInManager({
+    required this.userId,
+    required this.userEmail,
+  }) : _signedIn = true;
+
+  @override
+  Future<Map<String, String>> get authHeaders => Future.sync(() => {});
+
+  @override
+  String get firebaseUserUid => throw UnimplementedError();
+
+  @override
+  String get photoUrl => '';
+
+  @override
+  String get shortUserDescription => userEmail;
+
+  @override
+  signIn() {}
+
+  @override
+  void signOut() {}
+
+  @override
+  bool get signedIn => true;
+
+  @override
+  String get userDescription => userEmail;
+
+  @override
+  User? _firebaseUser;
+
+  @override
+  GoogleSignInAccount? _googleSignInAccount;
+
+  @override
+  bool _signedIn;
+
+  @override
+  GoogleSignIn get _googleSignIn => throw UnimplementedError();
+
+  @override
+  _onLogin(GoogleSignInAccount? account) {
+    throw UnimplementedError();
   }
 }
