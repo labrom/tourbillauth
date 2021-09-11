@@ -3,7 +3,7 @@ import 'package:tourbillon/change_notifier_scope.dart';
 import 'package:tourbillon/email_address_input_form.dart';
 import 'package:tourbillon/libloc.dart';
 
-import 'user_management_view_model.dart';
+import 'user_access_view_model.dart';
 import 'user_selector.dart';
 
 class UserAccessView extends StatelessWidget {
@@ -26,8 +26,8 @@ class UserAccessView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) =>
-      ChangeNotifierScope<UserManagementViewModel>(
-        (context) => UserManagementViewModel.firestore(context),
+      ChangeNotifierScope<UserAccessViewModel>(
+        (context) => UserAccessViewModel.firestore(context),
         builder: (_, viewModel, __) => Column(
           children: resource != null
               ? _withResource(context, viewModel)
@@ -36,7 +36,7 @@ class UserAccessView extends StatelessWidget {
       );
 
   List<Widget> _withResource(
-          BuildContext context, UserManagementViewModel viewModel) =>
+          BuildContext context, UserAccessViewModel viewModel) =>
       [
         UserSelector((user) =>
             viewModel.addUser(user.uid, email: user.email, resource: resource)),
@@ -51,7 +51,7 @@ class UserAccessView extends StatelessWidget {
       ];
 
   List<Widget> _withoutResource(
-          BuildContext context, UserManagementViewModel viewModel) =>
+          BuildContext context, UserAccessViewModel viewModel) =>
       [
         _EmailAddressRoleAdd(viewModel),
         Expanded(
@@ -64,8 +64,8 @@ class UserAccessView extends StatelessWidget {
         ),
       ];
 
-  Widget _userItemBuilder(BuildContext context,
-          UserManagementViewModel viewModel, UserRole user) =>
+  Widget _userItemBuilder(
+          BuildContext context, UserAccessViewModel viewModel, UserRole user) =>
       ListTile(
         title: Text(
           user.userEmail,
@@ -85,7 +85,7 @@ class UserAccessView extends StatelessWidget {
 }
 
 class _EmailAddressRoleAdd extends StatefulWidget {
-  final UserManagementViewModel viewModel;
+  final UserAccessViewModel viewModel;
   final String? resource;
   final List<String>? roles;
 

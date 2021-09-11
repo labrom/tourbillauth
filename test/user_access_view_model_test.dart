@@ -1,7 +1,7 @@
 import 'package:flutter/widgets.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:provider/provider.dart';
-import 'package:tourbillauth/user_management_view_model.dart';
+import 'package:tourbillauth/user_access_view_model.dart';
 import 'package:tourbillon/fake_firestore.dart';
 import 'package:tourbillon/firestore.dart';
 
@@ -23,12 +23,12 @@ void main() {
       await firestore.fake.collection('invites').doc('user1@my.org').set({
         'role': 'admin',
       });
-      late UserManagementViewModel viewModel;
+      late UserAccessViewModel viewModel;
       await tester.pumpWidget(Provider<FirestoreInterface>.value(
         value: firestore,
         child: ChangeNotifierProvider(
           create: (context) {
-            viewModel = UserManagementViewModel.firestore(context);
+            viewModel = UserAccessViewModel.firestore(context);
             return viewModel;
           },
           lazy: false,
@@ -55,12 +55,12 @@ void main() {
       });
       await firestore.fake.collection('invites').doc('user2@my.org').set({});
       await firestore.fake.collection('invites').doc('user3@my.org').set({});
-      late UserManagementViewModel viewModel;
+      late UserAccessViewModel viewModel;
       await tester.pumpWidget(Provider<FirestoreInterface>.value(
         value: firestore,
         child: ChangeNotifierProvider(
           create: (context) {
-            viewModel = UserManagementViewModel.firestore(context);
+            viewModel = UserAccessViewModel.firestore(context);
             return viewModel;
           },
           lazy: false,
@@ -88,12 +88,12 @@ void main() {
           'user2@my.org': 'reader',
         },
       });
-      late UserManagementViewModel viewModel;
+      late UserAccessViewModel viewModel;
       await tester.pumpWidget(Provider<FirestoreInterface>.value(
         value: firestore,
         child: ChangeNotifierProvider(
           create: (context) {
-            viewModel = UserManagementViewModel.firestore(context);
+            viewModel = UserAccessViewModel.firestore(context);
             return viewModel;
           },
           lazy: false,
@@ -115,12 +115,12 @@ void main() {
   });
   testWidgets('Add users/invites', (tester) async {
     var fakeFirestoreWrapper = FakeFirestoreWrapper();
-    late UserManagementViewModel viewModel;
+    late UserAccessViewModel viewModel;
     await tester.pumpWidget(Provider<FirestoreInterface>.value(
       value: fakeFirestoreWrapper,
       child: ChangeNotifierProvider(
         create: (context) {
-          viewModel = UserManagementViewModel.firestore(context);
+          viewModel = UserAccessViewModel.firestore(context);
           return viewModel;
         },
         lazy: false,
@@ -164,12 +164,12 @@ void main() {
         .set({
       'role': 'guest',
     });
-    late UserManagementViewModel viewModel;
+    late UserAccessViewModel viewModel;
     await tester.pumpWidget(Provider<FirestoreInterface>.value(
       value: fakeFirestoreWrapper,
       child: ChangeNotifierProvider(
         create: (context) {
-          viewModel = UserManagementViewModel.firestore(context);
+          viewModel = UserAccessViewModel.firestore(context);
           return viewModel;
         },
         lazy: false,

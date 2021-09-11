@@ -6,10 +6,10 @@ import 'package:tourbillon/firestore.dart';
 
 import 'app_user.dart';
 
-abstract class UserManagementViewModel extends ChangeNotifier {
-  /// Creates a [FirestoreUserManagementViewModel].
-  factory UserManagementViewModel.firestore(BuildContext context) =>
-      FirestoreUserManagementViewModel(context);
+abstract class UserAccessViewModel extends ChangeNotifier {
+  /// Creates a [FirestoreUserAccessViewModel].
+  factory UserAccessViewModel.firestore(BuildContext context) =>
+      FirestoreUserAccessViewModel(context);
 
   List<AppUserRole> listUsers({String? resource});
 
@@ -64,7 +64,7 @@ class InviteRole with UserRole {
   String? get userId => null;
 }
 
-/// An implementation of [UserManagementViewModel] that stores users in a
+/// An implementation of [UserAccessViewModel] that stores users in a
 /// Firestore table, and resource user roles in an array field in the
 /// resource document.
 ///
@@ -82,15 +82,15 @@ class InviteRole with UserRole {
 /// The source of truth for access to resources is the `users` table. If a
 /// resource lists a role for a user, this user must also be present in the
 /// `users` table in order to have access to this resource.
-class FirestoreUserManagementViewModel
+class FirestoreUserAccessViewModel
     with ChangeNotifier
-    implements UserManagementViewModel {
+    implements UserAccessViewModel {
   final BuildContext _context;
   final DataProvider _userProvider;
   final DataProvider _inviteProvider;
   final Cache<DocumentSnapshot> _resourceCache = Cache();
 
-  FirestoreUserManagementViewModel(this._context)
+  FirestoreUserAccessViewModel(this._context)
       : _userProvider = DataProvider(
           _context,
           'users',
