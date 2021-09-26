@@ -13,9 +13,8 @@ bool isAdmin(BuildContext context) =>
 /// A service provider for account management.
 ///
 /// This service loads current user's role and settings stored in Firestore.
-/// If the current user is an admin, it also loads roles for all users.
-/// A user is an admin if one of their roles is the admin role.
-/// By default, the admin role is `admin`.
+/// It also tells if the current user is an admin. A user is an admin if one
+/// of their roles is the admin role. By default, the admin role is `admin`.
 ///
 /// This service expects the following Firestore structure:
 /// * a users collection keyed on the user's Firebase UID, default collection
