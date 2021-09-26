@@ -69,11 +69,14 @@ class InviteRole with UserRole {
 /// resource document.
 ///
 /// Adding users or invitations:
-/// Users are stored in the `users` table, where document IDs are the user's
-/// UID. Documents contain a mandatory `email` field and an optional `role`
-/// field.
-/// Invitations are stored in the `invites` table, where document IDs are the
-/// user's email address. Documents contain an optional `role` field.
+/// Users are stored in the `users` collection by default (a different name can
+/// be specified), where document IDs are the user's UID. Documents contain a
+/// mandatory `email` field and two optional `role` and `display` fields.
+/// Invitations are stored in the `invites` collection by default (a different
+/// name can be specified), where document IDs are the user's email address.
+/// Documents contain an optional `role` field.
+/// In both collections, the `role` field is a string array that contains the
+/// list of roles this user (or invited user) has.
 /// In both cases, if a resource path is specified, the corresponding document's
 /// `roles` field is also updated, with the expectation that his field is a
 /// nested object whose keys are either UIDs or email addresses, and values are
@@ -87,18 +90,23 @@ class FirestoreUserAccessViewModel
     implements UserAccessViewModel {
   final BuildContext _context;
   final DataProvider _userProvider;
+  final String userCollectionName;
   final DataProvider _inviteProvider;
+  final String inviteCollectionName;
   final Cache<DocumentSnapshot> _resourceCache = Cache();
 
-  FirestoreUserAccessViewModel(this._context)
-      : _userProvider = DataProvider(
+  FirestoreUserAccessViewModel(
+    this._context, {
+    this.userCollectionName = 'users',
+    this.inviteCollectionName = 'invites',
+  })  : _userProvider = DataProvider(
           _context,
-          'users',
+          userCollectionName,
           queryModifier: (query) => query.orderBy('email'),
         ),
         _inviteProvider = DataProvider(
           _context,
-          'invites',
+          inviteCollectionName,
           queryModifier: (query) => query.orderBy(FieldPath.documentId),
         ) {
     _userProvider.addListener(() => notifyListeners());
@@ -109,7 +117,7 @@ class FirestoreUserAccessViewModel
   void addInvite(String email, {String? resource, String? role}) {
     var addInvite = firestoreProvider(_context)
         .instance
-        .collection('invites')
+        .collection(inviteCollectionName)
         .doc(email)
         .set({
       'role': role,
@@ -134,7 +142,7 @@ class FirestoreUserAccessViewModel
       {required String email, String? resource, String? role}) {
     var addUser = firestoreProvider(_context)
         .instance
-        .collection('users')
+        .collection(userCollectionName)
         .doc(userId)
         .set({
       'email': email,
