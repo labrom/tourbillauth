@@ -13,6 +13,7 @@ dependencies:
   cloud_firestore:
   firebase_auth:
   google_sign_in:
+  provider:
   tourbillon:
     git:
       https://github.com/labrom/tourbillon.git

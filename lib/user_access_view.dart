@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:tourbillon/change_notifier_scope.dart';
+import 'package:provider/provider.dart';
 import 'package:tourbillon/email_address_input_form.dart';
 import 'package:tourbillon/libloc.dart';
 
@@ -9,8 +9,10 @@ import 'user_selector.dart';
 class UserAccessView extends StatelessWidget {
   final String? resource;
   final List<String>? roles;
+  final UserAccessViewModel viewModel;
 
   const UserAccessView({
+    required this.viewModel,
     this.roles,
     Key? key,
   })  : resource = null,
@@ -18,6 +20,7 @@ class UserAccessView extends StatelessWidget {
 
   const UserAccessView.forResource(
     String resource, {
+    required this.viewModel,
     this.roles,
     Key? key,
     // ignore: prefer_initializing_formals
@@ -25,19 +28,19 @@ class UserAccessView extends StatelessWidget {
         super(key: key);
 
   @override
-  Widget build(BuildContext context) =>
-      ChangeNotifierScope<UserAccessViewModel>(
-        (context) => UserAccessViewModel.firestore(context),
-        builder: (_, viewModel, __) => Column(
-          children: resource != null
-              ? _withResource(context, viewModel)
-              : _withoutResource(context, viewModel),
-        ),
+  Widget build(BuildContext context) => ChangeNotifierProvider.value(
+        value: viewModel,
+        builder: (context, __) {
+          context.watch<UserAccessViewModel>();
+          return Column(
+            children: resource != null
+                ? _withResource(context)
+                : _withoutResource(context),
+          );
+        },
       );
 
-  List<Widget> _withResource(
-          BuildContext context, UserAccessViewModel viewModel) =>
-      [
+  List<Widget> _withResource(BuildContext context) => [
         UserSelector((user) =>
             viewModel.addUser(user.uid, email: user.email, resource: resource)),
         Expanded(
@@ -50,9 +53,7 @@ class UserAccessView extends StatelessWidget {
         ),
       ];
 
-  List<Widget> _withoutResource(
-          BuildContext context, UserAccessViewModel viewModel) =>
-      [
+  List<Widget> _withoutResource(BuildContext context) => [
         _EmailAddressRoleAdd(viewModel),
         Expanded(
           child: ListView(

@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:provider/provider.dart';
 import 'package:tourbillauth/account_manager.dart';
 import 'package:tourbillauth/directory_manager.dart';
-import 'package:tourbillauth/sign_in_manager.dart';
-import 'package:tourbillon/libloc.dart' as tourbillonloc;
 import 'package:tourbillauth/libloc.dart';
+import 'package:tourbillauth/sign_in_manager.dart';
 import 'package:tourbillauth/user_access_view.dart';
+import 'package:tourbillauth/user_access_view_model.dart';
 import 'package:tourbillon/fake_firestore.dart';
 import 'package:tourbillon/firestore.dart';
+import 'package:tourbillon/libloc.dart' as tourbillonloc;
 
 void main() {
   testWidgets('view roles, no resource', (tester) async {
@@ -21,19 +21,21 @@ void main() {
       'email': 'user2@my.org',
       'role': 'admin',
     });
-    await tester.pumpWidget(MaterialApp(
-      localizationsDelegates: [
-        tourbillonloc.LibLocalizations.delegate,
-      ],
-      home: Material(
-        child: Provider<FirestoreInterface>.value(
-          value: firestore,
-          child: Builder(
-            builder: (_) => UserAccessView(),
+    await tester.pumpWidget(
+      MaterialApp(
+        localizationsDelegates: [
+          tourbillonloc.LibLocalizations.delegate,
+        ],
+        home: Material(
+          child: Provider<FirestoreInterface>.value(
+            value: firestore,
+            builder: (context, _) => UserAccessView(
+              viewModel: UserAccessViewModel.firestore(context),
+            ),
           ),
         ),
       ),
-    ));
+    );
     await tester.idle();
     await tester.pump();
     expect(find.text('user1@my.org'), findsOneWidget);
@@ -78,8 +80,9 @@ void main() {
                 create: (context) => DirectoryManager(context),
               ),
             ],
-            child: Builder(
-              builder: (_) => UserAccessView.forResource('resources/resource1'),
+            builder: (context, _) => UserAccessView.forResource(
+              'resources/resource1',
+              viewModel: UserAccessViewModel.firestore(context),
             ),
           ),
         ),
