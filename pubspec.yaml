@@ -23,7 +23,6 @@ dev_dependencies:
     sdk: flutter
   fake_cloud_firestore:
   flutter_lints: ^1.0.0
-  provider:
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
