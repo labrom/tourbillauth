@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 import 'package:provider/provider.dart';
 import 'package:tourbillon/firestore.dart';
@@ -16,11 +17,17 @@ bool isAdmin(BuildContext context) =>
 /// It also tells if the current user is an admin. A user is an admin if one
 /// of their roles is the admin role. By default, the admin role is `admin`.
 ///
+/// This service also handles registering the current Firebase user if they
+/// don't have a user entry in the application yet, but there is an invitation
+/// with a matching email address.
+///
 /// This service expects the following Firestore structure:
 /// * a users collection keyed on the user's Firebase UID, default collection
 /// name: `users`
-/// * documents in the user collection must have a string array field that lists
-/// the user's roles, default field name: `roles`
+/// * an invitations collection keyed on the email address, default collection
+/// name: `invites`
+/// * documents in the user and invite collections must have a string array
+/// field that lists the user's roles, default field name: `roles`
 /// * a user settings collection keyed on the user's Firebase UID, default
 /// collection name: `user-settings`
 /// * documents in the user settings collection contain a map of settings names
@@ -30,26 +37,26 @@ bool isAdmin(BuildContext context) =>
 ///
 ///
 class AccountManager extends ManagerBase {
-  final String userCollection;
+  final BuildContext _context;
+  final String userCollectionName;
   final String adminRole;
-  final String rolesField;
-  final String userSettingCollection;
-  final String userInviteResponseCollection;
-  final String userInviteResponseEmailField;
+  final String rolesFieldName;
+  final String userSettingCollectionName;
+  final String inviteCollectionName;
   bool _rolesLoaded = false;
   bool _isAdmin = false;
+  final List<String> _roles = [];
 
   final Map<String, dynamic> _settings = {};
 
   AccountManager(
-    BuildContext context, {
-    this.userCollection = 'users',
+    this._context, {
+    this.userCollectionName = 'users',
     this.adminRole = 'admin',
-    this.rolesField = 'roles',
-    this.userSettingCollection = 'user-settings',
-    this.userInviteResponseCollection = 'user-invite-responses',
-    this.userInviteResponseEmailField = 'email',
-  }) : super(Provider.of<SignInManager>(context, listen: false));
+    this.rolesFieldName = 'roles',
+    this.userSettingCollectionName = 'user-settings',
+    this.inviteCollectionName = 'invites',
+  }) : super(Provider.of<SignInManager>(_context, listen: false));
 
   @override
   void onSignInManagerNotify(bool signedIn) {
@@ -66,17 +73,8 @@ class AccountManager extends ManagerBase {
   void clear() {
     _isAdmin = false;
     _rolesLoaded = false;
+    _roles.clear();
     _settings.clear();
-  }
-
-  bool _ensureSignOn() {
-    if (!checkSignIn()) {
-      _rolesLoaded = false;
-      _settings.clear();
-      notifyListeners();
-      return false;
-    }
-    return true;
   }
 
   bool get rolesLoaded => _rolesLoaded;
@@ -84,28 +82,33 @@ class AccountManager extends ManagerBase {
   bool get isAdmin => _isAdmin;
 
   Future<void> loadRoles() async {
-    if (!_ensureSignOn()) return;
+    if (!checkSignIn()) return;
     if (_rolesLoaded) return;
 
-    await _loadRoles();
-    _rolesLoaded = true;
-    notifyListeners();
+    var previousRoles = List.of(_roles);
+    try {
+      firestoreProvider(_context)
+          .instance
+          .collection(userCollectionName)
+          .doc(userId)
+          .snapshots()
+          .listenUnique((snapshot) {
+        _rolesLoaded = true;
+        _roles.clear();
+        _roles.addAll(snapshot.getOrNull<List<String>>(rolesFieldName) ?? []);
+        _roles.sort((role1, role2) => role1.compareTo(role2));
+        _isAdmin = _roles.contains(adminRole);
+        if (!listEquals(_roles, previousRoles)) {
+          notifyListeners();
+        }
+      }, key: '$userCollectionName/$userId');
+    } catch (error) {
+      log.e(error);
+      clear();
+    }
   }
 
-  Future<void> _loadRoles() async {
-    await FirebaseFirestore.instance
-        .collection(userCollection)
-        .doc(userId)
-        .get()
-        .then((snapshot) {
-      _isAdmin =
-          snapshot.getOrNull<List<String>>(rolesField)?.contains(adminRole) ==
-              true;
-    }).catchError((error) {
-      log.e(error);
-      _isAdmin = false;
-    });
-  }
+  List<String> get roles => List.of(_roles, growable: false);
 
   Future<void> _loadSettings() async {
     _settings.clear();
