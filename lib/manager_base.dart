@@ -29,6 +29,9 @@ abstract class ManagerBase extends ChangeNotifier {
 
   String? get userId => _userId;
 
+  String? get userEmail =>
+      signInManager.signedIn ? signInManager.userEmail : null;
+
   /// Checks if there is a signed-in user.
   ///
   /// If no user is currently signed in, invokes [clear()] and returns false.
@@ -42,8 +45,8 @@ abstract class ManagerBase extends ChangeNotifier {
       return signInManager.signedIn;
     }
     if (_userId == null && signInManager.signedIn) {
-      signInManager.userId;
+      _userId = signInManager.userId;
     }
-    return true;
+    return signInManager.signedIn;
   }
 }
