@@ -109,8 +109,9 @@ class AccountManager extends ManagerBase {
 
   Future<void> _loadSettings() async {
     _settings.clear();
-    await FirebaseFirestore.instance
-        .collection(userSettingCollection)
+    await firestoreProvider(_context)
+        .instance
+        .collection(userSettingCollectionName)
         .doc(userId)
         .get()
         .then((snapshot) {
@@ -123,8 +124,9 @@ class AccountManager extends ManagerBase {
 
   Future<void> writeSetting<T>(String key, T value) {
     _settings[key] = value;
-    return FirebaseFirestore.instance
-        .collection(userSettingCollection)
+    return firestoreProvider(_context)
+        .instance
+        .collection(userSettingCollectionName)
         .doc(userId)
         .set({key: value}, SetOptions(merge: true)).then((_) {
       notifyListeners();
