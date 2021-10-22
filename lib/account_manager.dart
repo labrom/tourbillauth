@@ -18,7 +18,7 @@ bool isAdmin(BuildContext context) =>
 /// of their roles is the admin role. By default, the admin role is `admin`.
 ///
 /// This service also handles registering the current Firebase user if they
-/// don't have a user entry in the application yet, but there is an invitation
+/// don't have a user entry in the application yet, and there is an invitation
 /// with a matching email address.
 ///
 /// This service expects the following Firestore structure:
@@ -32,10 +32,6 @@ bool isAdmin(BuildContext context) =>
 /// collection name: `user-settings`
 /// * documents in the user settings collection contain a map of settings names
 /// and values
-///
-///
-///
-///
 class AccountManager extends ManagerBase {
   final BuildContext _context;
   final String userCollectionName;
@@ -50,13 +46,14 @@ class AccountManager extends ManagerBase {
   final Map<String, dynamic> _settings = {};
 
   AccountManager(
-    this._context, {
+    this._context,
+    SignInManager signInManager, {
     this.userCollectionName = 'users',
     this.adminRole = 'admin',
     this.rolesFieldName = 'roles',
     this.userSettingCollectionName = 'user-settings',
     this.inviteCollectionName = 'invites',
-  }) : super(Provider.of<SignInManager>(_context, listen: false));
+  }) : super(signInManager);
 
   @override
   void onSignInManagerNotify(bool signedIn) {

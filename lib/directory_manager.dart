@@ -13,8 +13,10 @@ class DirectoryManager extends ManagerBase {
   final BuildContext _context;
   final List<AppUser> _users = [];
 
-  DirectoryManager(this._context)
-      : super(Provider.of<SignInManager>(_context, listen: false)) {
+  DirectoryManager(
+    this._context,
+    SignInManager signInManager,
+  ) : super(signInManager) {
     var accountManager = Provider.of<AccountManager>(_context, listen: false);
     accountManager.addListener(() {
       if (accountManager.isAdmin) {
