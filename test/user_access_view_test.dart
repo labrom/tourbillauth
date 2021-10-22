@@ -59,6 +59,8 @@ void main() {
         'user2': 'viewer',
       },
     });
+    final signInManager =
+        SignInManager.fakeUser(userId: 'user2', userEmail: 'user2@my.org');
     await tester.pumpWidget(
       MaterialApp(
         localizationsDelegates: [
@@ -70,14 +72,10 @@ void main() {
             providers: [
               Provider<FirestoreInterface>.value(value: firestore),
               ChangeNotifierProvider(
-                create: (context) => SignInManager.fakeUser(
-                    userId: 'user2', userEmail: 'user2@my.org'),
+                create: (context) => AccountManager(context, signInManager),
               ),
               ChangeNotifierProvider(
-                create: (context) => AccountManager(context),
-              ),
-              ChangeNotifierProvider(
-                create: (context) => DirectoryManager(context),
+                create: (context) => DirectoryManager(context, signInManager),
               ),
             ],
             builder: (context, _) => UserAccessView.forResource(
