@@ -142,13 +142,19 @@ class _FakeSignInManager with ChangeNotifier implements SignInManager {
   String get shortUserDescription => userEmail;
 
   @override
-  signIn() {}
+  signIn() {
+    _signedIn = true;
+    notifyListeners();
+  }
 
   @override
-  void signOut() {}
+  void signOut() {
+    _signedIn = false;
+    notifyListeners();
+  }
 
   @override
-  bool get signedIn => true;
+  bool get signedIn => _signedIn;
 
   @override
   String get userDescription => userEmail;
