@@ -78,7 +78,7 @@ class AccountManager extends ManagerBase {
 
   bool get isAdmin => _isAdmin;
 
-  Future<void> loadRoles() async {
+  void loadRoles() {
     if (!checkSignIn()) return;
     if (_rolesLoaded) return;
 
@@ -92,7 +92,7 @@ class AccountManager extends ManagerBase {
           .listenUnique((snapshot) {
         _rolesLoaded = true;
         _roles.clear();
-        _roles.addAll(snapshot.getOrNull<List<String>>(rolesFieldName) ?? []);
+        _roles.addAll(snapshot.getListOf<String>(rolesFieldName));
         _roles.sort((role1, role2) => role1.compareTo(role2));
         _isAdmin = _roles.contains(adminRole);
         if (!listEquals(_roles, previousRoles)) {
