@@ -93,12 +93,12 @@ class AccountManager extends ManagerBase {
         _roles.clear();
         _rolesLoaded = snapshot.exists;
         if (snapshot.exists) {
-        _roles.addAll(snapshot.getListOf<String>(rolesFieldName));
-        _roles.sort((role1, role2) => role1.compareTo(role2));
-        _isAdmin = _roles.contains(adminRole);
-        if (!listEquals(_roles, previousRoles)) {
-          notifyListeners();
-        }
+          _roles.addAll(snapshot.getListOf<String>(rolesFieldName));
+          _roles.sort((role1, role2) => role1.compareTo(role2));
+          _isAdmin = _roles.contains(adminRole);
+          if (!listEquals(_roles, previousRoles)) {
+            notifyListeners();
+          }
         }
       }, key: '$userCollectionName/$userId');
     } catch (error) {
@@ -108,6 +108,41 @@ class AccountManager extends ManagerBase {
   }
 
   List<String> get roles => List.of(_roles, growable: false);
+
+  void convertInvite() {
+    if (!checkSignIn()) return;
+    if (_rolesLoaded) {
+      log.i('User $userId already exists');
+      // Delete invite doc (although this could be done by a Firebase function)
+      firestoreProvider(_context)
+          .instance
+          .collection(inviteCollectionName)
+          .doc(userEmail!)
+          .delete();
+      return;
+    }
+    firestoreProvider(_context)
+        .instance
+        .collection(inviteCollectionName)
+        .doc(userEmail!)
+        .get()
+        .then((doc) {
+      if (doc.exists) {
+        firestoreProvider(_context)
+            .instance
+            .collection(userCollectionName)
+            .doc(userId!)
+            .set({
+          'email': userEmail,
+          'roles': doc.getListOf('roles'),
+          'last-updated': DateTime.now(),
+        });
+        loadRoles();
+      } else {
+        log.i('No invite found for $userEmail');
+      }
+    });
+  }
 
   Future<void> _loadSettings() async {
     _settings.clear();
