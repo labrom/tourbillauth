@@ -6,7 +6,7 @@ import 'package:tourbillon/fake_firestore.dart';
 import 'package:tourbillon/firestore.dart';
 
 void main() {
-  group('List users invites', () {
+  group('list users invites', () {
     testWidgets('with roles, without resource', (tester) async {
       var firestore = FakeFirestoreWrapper();
       await firestore.fake.collection('users').doc('user2').set({
@@ -113,7 +113,7 @@ void main() {
       expect(invites.first.role, equals('reader'));
     });
   });
-  testWidgets('Add users/invites', (tester) async {
+  testWidgets('add users/invites', (tester) async {
     var fakeFirestoreWrapper = FakeFirestoreWrapper();
     late UserAccessViewModel viewModel;
     await tester.pumpWidget(Provider<FirestoreInterface>.value(
@@ -142,7 +142,7 @@ void main() {
     expect(invites[1].userEmail, equals('user2@my.org'));
     expect(invites[1].role, equals('guest'));
   });
-  testWidgets('Remove users/invites', (tester) async {
+  testWidgets('remove users/invites', (tester) async {
     var fakeFirestoreWrapper = FakeFirestoreWrapper();
     await fakeFirestoreWrapper.fake.collection('users').doc('user1').set({
       'email': 'user1@my.org',
