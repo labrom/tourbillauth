@@ -30,7 +30,7 @@ void main() {
           child: Provider<FirestoreInterface>.value(
             value: firestore,
             builder: (context, _) => UserAccessView(
-              viewModel: UserAccessViewModel.firestore(context),
+              viewModel: UserAccessViewModel(context),
             ),
           ),
         ),
@@ -80,7 +80,7 @@ void main() {
             ],
             builder: (context, _) => UserAccessView.forResource(
               'resources/resource1',
-              viewModel: UserAccessViewModel.firestore(context),
+              viewModel: UserAccessViewModel(context),
             ),
           ),
         ),

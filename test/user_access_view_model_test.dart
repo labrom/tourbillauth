@@ -28,7 +28,7 @@ void main() {
         value: firestore,
         child: ChangeNotifierProvider(
           create: (context) {
-            viewModel = UserAccessViewModel.firestore(context);
+            viewModel = UserAccessViewModel(context);
             return viewModel;
           },
           lazy: false,
@@ -60,7 +60,7 @@ void main() {
         value: firestore,
         child: ChangeNotifierProvider(
           create: (context) {
-            viewModel = UserAccessViewModel.firestore(context);
+            viewModel = UserAccessViewModel(context);
             return viewModel;
           },
           lazy: false,
@@ -93,7 +93,7 @@ void main() {
         value: firestore,
         child: ChangeNotifierProvider(
           create: (context) {
-            viewModel = UserAccessViewModel.firestore(context);
+            viewModel = UserAccessViewModel(context);
             return viewModel;
           },
           lazy: false,
@@ -120,7 +120,7 @@ void main() {
       value: fakeFirestoreWrapper,
       child: ChangeNotifierProvider(
         create: (context) {
-          viewModel = UserAccessViewModel.firestore(context);
+          viewModel = UserAccessViewModel(context);
           return viewModel;
         },
         lazy: false,
@@ -169,7 +169,7 @@ void main() {
       value: fakeFirestoreWrapper,
       child: ChangeNotifierProvider(
         create: (context) {
-          viewModel = UserAccessViewModel.firestore(context);
+          viewModel = UserAccessViewModel(context);
           return viewModel;
         },
         lazy: false,
