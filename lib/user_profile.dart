@@ -6,10 +6,15 @@ import 'sign_in_manager.dart';
 
 /// A widget that displays the currently signed-in user's name and icon.
 ///
-/// When clicked, this widget displays an overlay menu that contains more information
-/// on the current user, has a link to a settings screen if [settingsRouteName]
-/// is specified, and allows to sign out. The menu is displayed below the widget,
-/// and is right-aligned with the widget.
+/// This widget uses a [SignInManager] obtained through a [Provider] in the context.
+/// If no user is currently signed in, this widget displays a sign-in button instead.
+/// Both the user name and sign-in button text use [AppBarTheme.toolbarTextStyle]
+/// if specified, [TextTheme.bodyText2] otherwise.
+///
+/// When there is a signed-in user and the user name is clicked, this widget
+/// displays an overlay menu that contains more information on the current user,
+/// has a link to a settings screen if [settingsRouteName] is specified, and allows
+/// to sign out. The menu is displayed below the widget, and is right-aligned with the widget.
 /// The menu uses [ThemeData.backgroundColor] as its background color, [TextTheme.subtitle1]
 /// for the user name, and [TextTheme.caption] for the email address.
 class UserProfile extends StatefulWidget implements PreferredSizeWidget {
@@ -74,7 +79,7 @@ class _UserProfileState extends State<UserProfile> {
   }
 
   TextStyle get _textStyle =>
-      Theme.of(context).appBarTheme.textTheme?.bodyText2 ??
+      AppBarTheme.of(context).toolbarTextStyle ??
       Theme.of(context).primaryTextTheme.bodyText2!;
 
   void _toggleMenu() {
