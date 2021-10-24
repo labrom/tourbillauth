@@ -87,6 +87,40 @@ void main() {
     expect(accountManager.roles, equals(['admin']));
     expect(accountManager.isAdmin, isTrue);
   });
+  testWidgets('admin role, different names', (tester) async {
+    final firestore = FakeFirestoreWrapper();
+    await firestore.fake.collection('peeps').doc('user1').set({
+      'email': 'user1@my.org',
+      'titles': ['emperor'],
+    });
+    final signInManager =
+        SignInManager.fakeUser(userId: 'user1', userEmail: 'user1@my.org');
+    late AccountManager accountManager;
+    await tester.pumpWidget(Provider<FirestoreInterface>.value(
+      value: firestore,
+      child: ChangeNotifierProvider(
+        create: (context) {
+          accountManager = AccountManager(
+            context,
+            signInManager,
+            adminRole: 'emperor',
+            userCollectionName: 'peeps',
+            rolesFieldName: 'titles',
+          );
+          return accountManager;
+        },
+        lazy: false,
+        child: Container(),
+      ),
+    ));
+    accountManager.loadRoles();
+    await tester.pumpAndSettle();
+    expect(accountManager.userId, equals('user1'));
+    expect(accountManager.userEmail, equals('user1@my.org'));
+    expect(accountManager.rolesLoaded, isTrue);
+    expect(accountManager.roles, equals(['emperor']));
+    expect(accountManager.isAdmin, isTrue);
+  });
   testWidgets('sign out', (tester) async {
     final firestore = FakeFirestoreWrapper();
     await firestore.fake.collection('users').doc('user1').set({
@@ -148,6 +182,47 @@ void main() {
     expect(accountManager.userEmail, 'user1@my.org');
     expect(accountManager.rolesLoaded, isTrue);
     expect(accountManager.roles, equals(['admin']));
+    expect(accountManager.isAdmin, isTrue);
+  });
+  testWidgets('convert invite, different names', (tester) async {
+    final firestore = FakeFirestoreWrapper();
+    await firestore.fake.collection('flyers').doc('user1@my.org').set({
+      'titles': ['emperor'],
+    });
+    final signInManager =
+        SignInManager.fakeUser(userId: 'user1', userEmail: 'user1@my.org');
+    late AccountManager accountManager;
+    await tester.pumpWidget(Provider<FirestoreInterface>.value(
+      value: firestore,
+      child: ChangeNotifierProvider(
+        create: (context) {
+          accountManager = AccountManager(
+            context,
+            signInManager,
+            adminRole: 'emperor',
+            inviteCollectionName: 'flyers',
+            rolesFieldName: 'titles',
+            userCollectionName: 'peeps',
+          );
+          return accountManager;
+        },
+        lazy: false,
+        child: Container(),
+      ),
+    ));
+    accountManager.loadRoles();
+    await tester.pumpAndSettle();
+    expect(accountManager.userId, 'user1');
+    expect(accountManager.userEmail, 'user1@my.org');
+    expect(accountManager.rolesLoaded, isFalse);
+    expect(accountManager.roles, isEmpty);
+    expect(accountManager.isAdmin, isFalse);
+    accountManager.convertInvite();
+    await tester.pumpAndSettle();
+    expect(accountManager.userId, 'user1');
+    expect(accountManager.userEmail, 'user1@my.org');
+    expect(accountManager.rolesLoaded, isTrue);
+    expect(accountManager.roles, equals(['emperor']));
     expect(accountManager.isAdmin, isTrue);
   });
   testWidgets('convert invite - no invite', (tester) async {

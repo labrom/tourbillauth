@@ -134,7 +134,7 @@ class AccountManager extends ManagerBase {
             .doc(userId!)
             .set({
           'email': userEmail,
-          'roles': doc.getListOf('roles'),
+          rolesFieldName: doc.getListOf(rolesFieldName),
           'last-updated': DateTime.now(),
         });
         loadRoles();
