@@ -90,15 +90,18 @@ class AccountManager extends ManagerBase {
           .doc(userId)
           .snapshots()
           .listenUnique((snapshot) {
-        _roles.clear();
         _rolesLoaded = snapshot.exists;
         if (snapshot.exists) {
+          _roles.clear();
           _roles.addAll(snapshot.getListOf<String>(rolesFieldName));
           _roles.sort((role1, role2) => role1.compareTo(role2));
           _isAdmin = _roles.contains(adminRole);
           if (!listEquals(_roles, previousRoles)) {
             notifyListeners();
           }
+        } else {
+          clear();
+          notifyListeners();
         }
       }, key: '$userCollectionName/$userId');
     } catch (error) {
