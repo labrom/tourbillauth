@@ -43,8 +43,132 @@ void main() {
       expect(invites.length, equals(2));
       expect(users[0].userEmail, equals('user1@my.org'));
       expect(users[0].roles.first, equals('admin'));
+      expect(users[1].userEmail, equals('user2@my.org'));
+      expect(users[1].roles.first, equals('guest'));
+      expect(invites[0].userEmail, equals('user1@my.org'));
+      expect(invites[0].roles.first, equals('admin'));
       expect(invites[1].userEmail, equals('user2@my.org'));
       expect(invites[1].roles.first, equals('guest'));
+    });
+    testWidgets('combined list with roles, without resource', (tester) async {
+      var firestore = FakeFirestoreWrapper();
+      await firestore.fake.collection('users').doc('user2').set({
+        'email': 'user2@my.org',
+        'roles': ['guest'],
+      });
+      await firestore.fake.collection('users').doc('user1').set({
+        'email': 'user1@my.org',
+        'roles': ['admin'],
+      });
+      await firestore.fake.collection('invites').doc('invite1').set({
+        'email': 'user1@my.org',
+        'roles': ['admin'],
+      });
+      await firestore.fake.collection('invites').doc('invite2').set({
+        'email': 'user2@my.org',
+        'roles': ['guest'],
+      });
+      late UserAccessViewModel viewModel;
+      await tester.pumpWidget(Provider<FirestoreInterface>.value(
+        value: firestore,
+        child: ChangeNotifierProvider(
+          create: (context) {
+            viewModel = UserAccessViewModel(context);
+            return viewModel;
+          },
+          lazy: false,
+          child: Container(),
+        ),
+      ));
+      var usersAndInvites = viewModel.listUsersAndInvites();
+      expect(usersAndInvites.length, equals(2));
+      expect(usersAndInvites[0].userEmail, equals('user1@my.org'));
+      expect(usersAndInvites[0].roles.length, equals(1));
+      expect(usersAndInvites[1].userEmail, equals('user2@my.org'));
+      expect(usersAndInvites[1].roles.length, equals(1));
+    });
+    testWidgets('with multiple roles, without resource', (tester) async {
+      var firestore = FakeFirestoreWrapper();
+      await firestore.fake.collection('users').doc('user2').set({
+        'email': 'user2@my.org',
+        'roles': ['guest', 'tourist'],
+      });
+      await firestore.fake.collection('users').doc('user1').set({
+        'email': 'user1@my.org',
+        'roles': ['admin', 'boss'],
+      });
+      await firestore.fake.collection('invites').doc('invite1').set({
+        'email': 'user1@my.org',
+        'roles': ['admin', 'nimda'],
+      });
+      await firestore.fake.collection('invites').doc('invite2').set({
+        'email': 'user2@my.org',
+        'roles': ['guest', 'tseug'],
+      });
+      late UserAccessViewModel viewModel;
+      await tester.pumpWidget(Provider<FirestoreInterface>.value(
+        value: firestore,
+        child: ChangeNotifierProvider(
+          create: (context) {
+            viewModel = UserAccessViewModel(context);
+            return viewModel;
+          },
+          lazy: false,
+          child: Container(),
+        ),
+      ));
+      var users = viewModel.listUsers();
+      var invites = viewModel.listInvites();
+      expect(users.length, equals(2));
+      expect(invites.length, equals(2));
+      expect(users.length, equals(2));
+      expect(invites.length, equals(2));
+      expect(users[0].userEmail, equals('user1@my.org'));
+      expect(users[0].roles.length, equals(2));
+      expect(users[1].userEmail, equals('user2@my.org'));
+      expect(users[1].roles.length, equals(2));
+      expect(invites[0].userEmail, equals('user1@my.org'));
+      expect(invites[0].roles.length, equals(2));
+      expect(invites[1].userEmail, equals('user2@my.org'));
+      expect(invites[1].roles.length, equals(2));
+    });
+    testWidgets('combined list with multiple roles, without resource',
+        (tester) async {
+      var firestore = FakeFirestoreWrapper();
+      await firestore.fake.collection('users').doc('user2').set({
+        'email': 'user2@my.org',
+        'roles': ['guest', 'tourist'],
+      });
+      await firestore.fake.collection('users').doc('user1').set({
+        'email': 'user1@my.org',
+        'roles': ['admin', 'boss'],
+      });
+      await firestore.fake.collection('invites').doc('invite1').set({
+        'email': 'user1@my.org',
+        'roles': ['admin', 'nimda'],
+      });
+      await firestore.fake.collection('invites').doc('invite2').set({
+        'email': 'user2@my.org',
+        'roles': ['guest', 'tseug'],
+      });
+      late UserAccessViewModel viewModel;
+      await tester.pumpWidget(Provider<FirestoreInterface>.value(
+        value: firestore,
+        child: ChangeNotifierProvider(
+          create: (context) {
+            viewModel = UserAccessViewModel(context);
+            return viewModel;
+          },
+          lazy: false,
+          child: Container(),
+        ),
+      ));
+      var usersAndInvites = viewModel.listUsersAndInvites();
+      expect(usersAndInvites.length, equals(2));
+      expect(usersAndInvites[0].userEmail, equals('user1@my.org'));
+      expect(usersAndInvites[0].roles.length, equals(3));
+      expect(usersAndInvites[1].userEmail, equals('user2@my.org'));
+      expect(usersAndInvites[1].roles.length, equals(3));
     });
     testWidgets('users & invites, without roles, without resource',
         (tester) async {

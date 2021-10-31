@@ -148,7 +148,7 @@ class UserAccessViewModel with ChangeNotifier {
             resourceDoc.getListOf<String>('$rolesFieldName:${invite.docId}');
         // Replace invite roles with resource roles if it isn't empty.
         if (resourceInviteRoles.isNotEmpty) {
-          invite.roles = resourceInviteRoles;
+          invite.roles = resourceInviteRoles.toSet();
         }
       }
       return invites;
@@ -187,7 +187,7 @@ class UserAccessViewModel with ChangeNotifier {
             resourceDoc.getListOf<String>('$rolesFieldName:${user.userId}');
         // Replace user roles with resource roles if it isn't empty.
         if (resourceUserRoles.isNotEmpty) {
-          user.roles = resourceUserRoles;
+          user.roles = resourceUserRoles.toSet();
         }
       }
       return users;
@@ -207,11 +207,26 @@ class UserAccessViewModel with ChangeNotifier {
   }
 
   List<UserRole> listUsersAndInvites({String? resource}) {
-    var users = listUsers(resource: resource);
-    var userEmails = users.map((user) => user.userEmail).toList();
-    var usersAndInvites = List<UserRole>.from(users);
-    usersAndInvites.addAll(listInvites(resource: resource)
-        .where((invite) => !userEmails.contains(invite.userEmail)));
+    final users = listUsers(resource: resource);
+    final invites = listInvites(resource: resource);
+    final userEmails = users.map((user) => user.userEmail).toList();
+    final inviteEmails = invites.map((invite) => invite.userEmail).toList();
+    final invitesOnly =
+        invites.where((invite) => !userEmails.contains(invite.userEmail));
+    final mergeableUsers =
+        users.where((user) => inviteEmails.contains(user.userEmail));
+    final mergeableInvites =
+        invites.where((invite) => userEmails.contains(invite.userEmail));
+
+    // Merge roles from user and invite entries with the same email address
+    for (var userInvite in mergeableUsers) {
+      userInvite.roles.addAll(mergeableInvites
+          .firstWhere((invite) => invite.userEmail == userInvite.userEmail)
+          .roles);
+    }
+    // Add invites to user list
+    final usersAndInvites = List<UserRole>.from(users);
+    usersAndInvites.addAll(invitesOnly);
     usersAndInvites
         .sort((email1, email2) => email1.userEmail.compareTo(email2.userEmail));
     return usersAndInvites;
@@ -236,7 +251,7 @@ class UserAccessViewModel with ChangeNotifier {
 
 mixin UserRole {
   late String userEmail;
-  late List<String> roles;
+  late Set<String> roles;
   String? get userId;
 }
 
@@ -251,7 +266,7 @@ class AppUserRole extends AppUser with UserRole {
             email: userEmail,
             description: userDisplay ?? userEmail) {
     this.userEmail = userEmail;
-    this.roles = roles ?? [];
+    this.roles = (roles ?? []).toSet();
   }
 
   @override
@@ -266,7 +281,7 @@ class InviteRole with UserRole {
     List<String>? roles,
   }) {
     this.userEmail = userEmail;
-    this.roles = roles ?? [];
+    this.roles = (roles ?? []).toSet();
   }
 
   @override
