@@ -71,9 +71,9 @@ class UserAccessView extends StatelessWidget {
         title: Text(
           user.userEmail,
         ),
-        subtitle: user.role != null
+        subtitle: user.roles.isNotEmpty
             ? Text(
-                user.role!,
+                user.roles.join(', '),
               )
             : null,
         trailing: IconButton(
@@ -138,7 +138,7 @@ class _EmailAddressRoleAddState extends State<_EmailAddressRoleAdd> {
                 ? () => widget.viewModel.addInvite(
                       _controller.text,
                       resource: widget.resource,
-                      role: role,
+                      roles: role != null ? [role!] : [],
                     )
                 : null,
             child: Text(libloc(context).addButtonLabel),

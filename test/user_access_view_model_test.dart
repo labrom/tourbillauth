@@ -11,17 +11,19 @@ void main() {
       var firestore = FakeFirestoreWrapper();
       await firestore.fake.collection('users').doc('user2').set({
         'email': 'user2@my.org',
-        'role': 'guest',
+        'roles': ['guest'],
       });
       await firestore.fake.collection('users').doc('user1').set({
         'email': 'user1@my.org',
-        'role': 'admin',
+        'roles': ['admin'],
       });
-      await firestore.fake.collection('invites').doc('user2@my.org').set({
-        'role': 'guest',
+      await firestore.fake.collection('invites').doc('invite1').set({
+        'email': 'user1@my.org',
+        'roles': ['admin'],
       });
-      await firestore.fake.collection('invites').doc('user1@my.org').set({
-        'role': 'admin',
+      await firestore.fake.collection('invites').doc('invite2').set({
+        'email': 'user2@my.org',
+        'roles': ['guest'],
       });
       late UserAccessViewModel viewModel;
       await tester.pumpWidget(Provider<FirestoreInterface>.value(
@@ -40,9 +42,9 @@ void main() {
       expect(users.length, equals(2));
       expect(invites.length, equals(2));
       expect(users[0].userEmail, equals('user1@my.org'));
-      expect(users[0].role, equals('admin'));
+      expect(users[0].roles.first, equals('admin'));
       expect(invites[1].userEmail, equals('user2@my.org'));
-      expect(invites[1].role, equals('guest'));
+      expect(invites[1].roles.first, equals('guest'));
     });
     testWidgets('users & invites, without roles, without resource',
         (tester) async {
@@ -53,8 +55,12 @@ void main() {
       await firestore.fake.collection('users').doc('user2').set({
         'email': 'user2@my.org',
       });
-      await firestore.fake.collection('invites').doc('user2@my.org').set({});
-      await firestore.fake.collection('invites').doc('user3@my.org').set({});
+      await firestore.fake.collection('invites').doc('invite2').set({
+        'email': 'user2@my.org',
+      });
+      await firestore.fake.collection('invites').doc('invite3').set({
+        'email': 'user3@my.org',
+      });
       late UserAccessViewModel viewModel;
       await tester.pumpWidget(Provider<FirestoreInterface>.value(
         value: firestore,
@@ -77,16 +83,15 @@ void main() {
       var firestore = FakeFirestoreWrapper();
       await firestore.fake.collection('users').doc('user1').set({
         'email': 'user1@my.org',
-        'role': 'admin',
+        'roles': ['admin'],
       });
-      await firestore.fake.collection('invites').doc('user2@my.org').set({
-        'role': 'guest',
+      await firestore.fake.collection('invites').doc('invite2').set({
+        'email': 'user2@my.org',
+        'roles': ['guest'],
       });
       await firestore.fake.collection('resources').doc('resource1').set({
-        'roles': {
-          'user1': 'editor',
-          'user2@my.org': 'reader',
-        },
+        'roles:user1': ['editor'],
+        'roles:invite2': ['reader'],
       });
       late UserAccessViewModel viewModel;
       await tester.pumpWidget(Provider<FirestoreInterface>.value(
@@ -108,9 +113,9 @@ void main() {
       expect(users.length, equals(1));
       expect(invites.length, equals(1));
       expect(users.first.userEmail, equals('user1@my.org'));
-      expect(users.first.role, equals('editor'));
+      expect(users.first.roles.first, equals('editor'));
       expect(invites.first.userEmail, equals('user2@my.org'));
-      expect(invites.first.role, equals('reader'));
+      expect(invites.first.roles.first, equals('reader'));
     });
   });
   testWidgets('add users/invites', (tester) async {
@@ -127,10 +132,10 @@ void main() {
         child: Container(),
       ),
     ));
-    viewModel.addUser('user1', email: 'user1@my.org', role: 'admin');
-    viewModel.addUser('user2', email: 'user2@my.org', role: 'guest');
-    viewModel.addInvite('user1@my.org', role: 'admin');
-    viewModel.addInvite('user2@my.org', role: 'guest');
+    viewModel.addUser('user1', email: 'user1@my.org', roles: ['admin']);
+    viewModel.addUser('user2', email: 'user2@my.org', roles: ['guest']);
+    viewModel.addInvite('user1@my.org', roles: ['admin']);
+    viewModel.addInvite('user2@my.org', roles: ['guest']);
     await fakeFirestoreWrapper.fake.flush();
     await tester.pump();
     var users = viewModel.listUsers();
@@ -138,31 +143,27 @@ void main() {
     expect(users.length, equals(2));
     expect(viewModel.listInvites().length, equals(2));
     expect(users[0].userEmail, equals('user1@my.org'));
-    expect(users[0].role, equals('admin'));
+    expect(users[0].roles.first, equals('admin'));
     expect(invites[1].userEmail, equals('user2@my.org'));
-    expect(invites[1].role, equals('guest'));
+    expect(invites[1].roles.first, equals('guest'));
   });
   testWidgets('remove users/invites', (tester) async {
     var fakeFirestoreWrapper = FakeFirestoreWrapper();
     await fakeFirestoreWrapper.fake.collection('users').doc('user1').set({
       'email': 'user1@my.org',
-      'role': 'admin',
+      'roles': ['admin'],
     });
     await fakeFirestoreWrapper.fake.collection('users').doc('user2').set({
       'email': 'user2@my.org',
-      'role': 'guest',
+      'roles': ['guest'],
     });
-    await fakeFirestoreWrapper.fake
-        .collection('invites')
-        .doc('user1@my.org')
-        .set({
-      'role': 'admin',
+    await fakeFirestoreWrapper.fake.collection('invites').doc('invite1').set({
+      'email': 'user1@my.org',
+      'roles': ['admin'],
     });
-    await fakeFirestoreWrapper.fake
-        .collection('invites')
-        .doc('user2@my.org')
-        .set({
-      'role': 'guest',
+    await fakeFirestoreWrapper.fake.collection('invites').doc('invite2').set({
+      'email': 'user2@my.org',
+      'roles': ['guest'],
     });
     late UserAccessViewModel viewModel;
     await tester.pumpWidget(Provider<FirestoreInterface>.value(
@@ -184,8 +185,8 @@ void main() {
     expect(users.length, equals(1));
     expect(invites.length, equals(1));
     expect(users[0].userEmail, equals('user1@my.org'));
-    expect(users[0].role, equals('admin'));
+    expect(users[0].roles.first, equals('admin'));
     expect(invites[0].userEmail, equals('user2@my.org'));
-    expect(invites[0].role, equals('guest'));
+    expect(invites[0].roles.first, equals('guest'));
   });
 }

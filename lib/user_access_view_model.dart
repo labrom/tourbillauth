@@ -3,15 +3,23 @@ import 'package:flutter/widgets.dart';
 import 'package:tourbillon/cache.dart';
 import 'package:tourbillon/data_provider.dart';
 import 'package:tourbillon/firestore.dart';
+import 'package:tourbillon/log.dart';
 
 import 'app_user.dart';
 
 /// A view model that allows to manage the app's users.
 ///
 /// This implementation of stores users in a Firestore collection, and resource
-/// user roles in an array field in the resource document (this resource document
+/// user roles in a set of fields in the resource document. This resource document
 /// might be the actual resource document, or another document that is associated
-/// this resource - with the same id - and only contains user roles for this resource).
+/// with this resource - with the same id - and only contains user roles for this
+/// resource. When working with a resource, a user or invited user only has access
+/// to this resource when the document contains a field for this user or invite.
+/// This field contains the list of roles specific to this resource, for the associated
+/// user or invite. This field name's format is `roles:xxx` where `xxx` is either
+/// the user's UID or the document ID of the invite.
+/// If the list is empty, the user or invite still has access,
+/// but their role(s) default to the ones specified in the user or invite document.
 ///
 /// This class doesn't perform any verification of the current user's role. If the
 /// current user doesn't have sufficient rights to manage other users, this view
@@ -20,32 +28,35 @@ import 'app_user.dart';
 /// Adding users or invitations:
 /// Users are stored in the `users` collection by default (a different name can
 /// be specified), where document IDs are the user's UID. Documents contain a
-/// mandatory `email` field and two optional `role` and `display` fields.
+/// mandatory `email` field and two optional `roles` (a different name can be
+/// specified) and `display` fields.
 /// Invitations are stored in the `invites` collection by default (a different
-/// name can be specified), where document IDs are the user's email address.
-/// Documents contain an optional `role` field.
-/// In both collections, the `role` field is a string array that contains the
+/// name can be specified), where document IDs are auto-generated.
+/// Documents contain a mandatory `email` field  an optional `roles` field
+/// (a different name can be specified).
+/// In both collections, the `roles` field is a string array that contains the
 /// list of roles this user (or invited user) has.
-/// In both cases, if a resource path is specified, the corresponding document's
-/// `roles` field is also updated, with the expectation that his field is a
-/// nested object whose keys are either UIDs or email addresses, and values are
-/// corresponding user's roles.
 ///
-/// The source of truth for access to resources is the `users` table. If a
+/// In both cases, if a resource path is specified, the corresponding document's
+/// `roles:xxx` field is also updated with the list of roles.
+///
+/// The source of truth for access to resources is the user list. If a
 /// resource lists a role for a user, this user must also be present in the
-/// `users` table in order to have access to this resource.
+/// user list in order to have access to this resource.
 class UserAccessViewModel with ChangeNotifier {
   final BuildContext _context;
   final DataProvider _userProvider;
   final String userCollectionName;
   final DataProvider _inviteProvider;
   final String inviteCollectionName;
+  final String rolesFieldName;
   final Cache<DocumentSnapshot> _resourceCache = Cache();
 
   UserAccessViewModel(
     this._context, {
     this.userCollectionName = 'users',
     this.inviteCollectionName = 'invites',
+    this.rolesFieldName = 'roles',
   })  : _userProvider = DataProvider(
           _context,
           userCollectionName,
@@ -60,23 +71,23 @@ class UserAccessViewModel with ChangeNotifier {
     _inviteProvider.addListener(() => notifyListeners());
   }
 
-  void addInvite(String email, {String? resource, String? role}) {
+  void addInvite(String email,
+      {String? resource, List<String> roles = const []}) {
     var addInvite = firestoreProvider(_context)
         .instance
         .collection(inviteCollectionName)
-        .doc(email)
-        .set({
-      'role': role,
+        .add({
+      'email': email,
+      rolesFieldName: FieldValue.arrayUnion(roles),
     });
     if (resource != null) {
-      Future.wait([
-        addInvite,
+      addInvite.then((inviteDoc) {
         FirebaseFirestore.instance.doc(resource).update({
-          'roles.$email': role,
-        }),
-      ]).then((_) {
-        _resourceCache.setStale(resource);
-        notifyListeners();
+          '$rolesFieldName:$inviteDoc.id': roles,
+        }).then((_) {
+          _resourceCache.setStale(resource);
+          notifyListeners();
+        });
       });
     } else {
       addInvite.then((_) => notifyListeners());
@@ -84,20 +95,22 @@ class UserAccessViewModel with ChangeNotifier {
   }
 
   void addUser(String userId,
-      {required String email, String? resource, String? role}) {
+      {required String email,
+      String? resource,
+      List<String> roles = const []}) {
     var addUser = firestoreProvider(_context)
         .instance
         .collection(userCollectionName)
         .doc(userId)
         .set({
       'email': email,
-      'role': role,
-    });
+      rolesFieldName: FieldValue.arrayUnion(roles),
+    }, SetOptions(merge: true));
     if (resource != null) {
       Future.wait([
         addUser,
         FirebaseFirestore.instance.doc(resource).update({
-          'roles.$userId': role,
+          '$rolesFieldName:$userId': roles,
         }),
       ]).then((_) {
         _resourceCache.setStale(resource);
@@ -109,58 +122,88 @@ class UserAccessViewModel with ChangeNotifier {
   }
 
   List<InviteRole> listInvites({String? resource}) {
-    var invites = _inviteProvider.data
+    final invites = _inviteProvider.data
         .map((doc) => InviteRole(
-              doc.id,
-              role: doc.getOrNull('role'),
+              userEmail: doc.get('email'),
+              docId: doc.id,
+              roles: doc.getListOf<String>(rolesFieldName),
             ))
         .toList();
-
-    if (resource != null) {
-      var doc = _resourceCache[resource];
-      if (doc != null) {
-        var resourceUsers = doc.getOrDefault<Map<String, dynamic>>('roles', {});
-        invites
-            .removeWhere((user) => !resourceUsers.containsKey(user.userEmail));
-        for (var invite in invites) {
-          invite.role = resourceUsers[invite.userEmail];
-        }
-      } else {
-        firestoreProvider(_context).instance.doc(resource).get().then((doc) {
-          _resourceCache[resource] = doc;
-          notifyListeners();
-        });
-      }
+    if (resource == null) {
+      return invites;
     }
-    return invites;
+
+    // If there is a non-stale resource doc in the cache, load roles of users
+    // that are on the invite list
+    var resourceDoc = _resourceCache[resource];
+    if (resourceDoc != null) {
+      // Check if resource doc has a roles entry for this invite
+      // This role entry can be an empty role list
+      // If there is no entry (different from empty list), the invite is removed
+      final resourceData = resourceDoc.data() as Map<String, dynamic>;
+      invites.removeWhere((invite) =>
+          !resourceData.containsKey('$rolesFieldName:${invite.docId}'));
+      for (var invite in invites) {
+        final resourceInviteRoles =
+            resourceDoc.getListOf<String>('$rolesFieldName:${invite.docId}');
+        // Replace invite roles with resource roles if it isn't empty.
+        if (resourceInviteRoles.isNotEmpty) {
+          invite.roles = resourceInviteRoles;
+        }
+      }
+      return invites;
+    }
+
+    // Resource doc isn't in the cache, so load it, and return an empty invite list
+    _loadResource(resource);
+    return List.empty();
   }
 
   List<AppUserRole> listUsers({String? resource}) {
-    var users = _userProvider.data
+    final users = _userProvider.data
         .map((doc) => AppUserRole(
               doc.id,
               doc.get('email'),
               userDisplay: doc.getOrNull('display'),
-              role: doc.getOrNull('role'),
+              roles: doc.getListOf<String>(rolesFieldName),
             ))
         .toList();
-
-    if (resource != null) {
-      var doc = _resourceCache[resource];
-      if (doc != null) {
-        var resourceUsers = doc.getOrDefault<Map<String, dynamic>>('roles', {});
-        users.removeWhere((user) => !resourceUsers.containsKey(user.uid));
-        for (var user in users) {
-          user.role = resourceUsers[user.uid];
-        }
-      } else {
-        firestoreProvider(_context).instance.doc(resource).get().then((doc) {
-          _resourceCache[resource] = doc;
-          notifyListeners();
-        });
-      }
+    if (resource == null) {
+      return users;
     }
-    return users;
+
+    // If there is a non-stale resource doc in the cache, load roles of users
+    // that are on the user list
+    var resourceDoc = _resourceCache[resource];
+    if (resourceDoc != null) {
+      // Check if resource doc has a roles entry for this user
+      // This role entry can be an empty role list
+      // If there is no entry (different from empty list), the user is removed
+      var resourceData = resourceDoc.data() as Map<String, dynamic>;
+      users.removeWhere((user) =>
+          !resourceData.containsKey('$rolesFieldName:${user.userId}'));
+      for (var user in users) {
+        final resourceUserRoles =
+            resourceDoc.getListOf<String>('$rolesFieldName:${user.userId}');
+        // Replace user roles with resource roles if it isn't empty.
+        if (resourceUserRoles.isNotEmpty) {
+          user.roles = resourceUserRoles;
+        }
+      }
+      return users;
+    }
+
+    // Resource doc isn't in the cache, so load it, and return an empty invite list
+    _loadResource(resource);
+    return List.empty();
+  }
+
+  void _loadResource(String resource) {
+    // TODO Only load roles
+    firestoreProvider(_context).instance.doc(resource).get().then((doc) {
+      _resourceCache[resource] = doc;
+      notifyListeners();
+    });
   }
 
   List<UserRole> listUsersAndInvites({String? resource}) {
@@ -175,8 +218,14 @@ class UserAccessViewModel with ChangeNotifier {
   }
 
   void removeInvite(String email, {String? resource}) {
-    _inviteProvider.delete(email);
-    // Expect resource roles to be automatically deleted with a Firestore function.
+    try {
+      final inviteDoc =
+          _inviteProvider.data.firstWhere((doc) => doc.get('email') == email);
+      _inviteProvider.delete(inviteDoc.id);
+      // Expect resource roles to be automatically deleted with a Firestore function.
+    } on StateError {
+      log.i('No invite found for $email');
+    }
   }
 
   void removeUser(String userId, {String? resource}) {
@@ -187,7 +236,7 @@ class UserAccessViewModel with ChangeNotifier {
 
 mixin UserRole {
   late String userEmail;
-  late String? role;
+  late List<String> roles;
   String? get userId;
 }
 
@@ -196,13 +245,13 @@ class AppUserRole extends AppUser with UserRole {
     String userId,
     String userEmail, {
     String? userDisplay,
-    String? role,
+    List<String>? roles,
   }) : super(
             uid: userId,
             email: userEmail,
             description: userDisplay ?? userEmail) {
     this.userEmail = userEmail;
-    this.role = role;
+    this.roles = roles ?? [];
   }
 
   @override
@@ -210,12 +259,14 @@ class AppUserRole extends AppUser with UserRole {
 }
 
 class InviteRole with UserRole {
-  InviteRole(
-    String userEmail, {
-    String? role,
+  String? docId;
+  InviteRole({
+    required String userEmail,
+    this.docId,
+    List<String>? roles,
   }) {
     this.userEmail = userEmail;
-    this.role = role;
+    this.roles = roles ?? [];
   }
 
   @override
