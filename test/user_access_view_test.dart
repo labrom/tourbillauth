@@ -44,6 +44,38 @@ void main() {
     expect(find.text('user2@my.org'), findsOneWidget);
     expect(find.text('admin'), findsOneWidget);
   });
+  testWidgets('view multiple roles, no resource', (tester) async {
+    final firestore = FakeFirestoreWrapper();
+    await firestore.fake.collection('invites').doc('invite1').set({
+      'email': 'user1@my.org',
+      'roles': ['reader', 'guest'],
+    });
+    await firestore.fake.collection('users').doc('user2').set({
+      'email': 'user2@my.org',
+      'roles': ['chief', 'admin'],
+    });
+    await tester.pumpWidget(
+      MaterialApp(
+        localizationsDelegates: [
+          tourbillonloc.LibLocalizations.delegate,
+        ],
+        home: Material(
+          child: Provider<FirestoreInterface>.value(
+            value: firestore,
+            builder: (context, _) => UserAccessView(
+              viewModel: UserAccessViewModel(context),
+            ),
+          ),
+        ),
+      ),
+    );
+    await tester.idle();
+    await tester.pump();
+    expect(find.text('user1@my.org'), findsOneWidget);
+    expect(find.text('guest, reader'), findsOneWidget);
+    expect(find.text('user2@my.org'), findsOneWidget);
+    expect(find.text('admin, chief'), findsOneWidget);
+  });
   testWidgets('view roles, with a resource', (tester) async {
     final firestore = FakeFirestoreWrapper();
     await firestore.fake.collection('invites').doc('invite1').set({

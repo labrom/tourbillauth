@@ -1,3 +1,5 @@
+import 'dart:collection';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/widgets.dart';
 import 'package:tourbillon/cache.dart';
@@ -148,7 +150,8 @@ class UserAccessViewModel with ChangeNotifier {
             resourceDoc.getListOf<String>('$rolesFieldName:${invite.docId}');
         // Replace invite roles with resource roles if it isn't empty.
         if (resourceInviteRoles.isNotEmpty) {
-          invite.roles = resourceInviteRoles.toSet();
+          invite.roles.clear();
+          invite.roles.addAll(resourceInviteRoles);
         }
       }
       return invites;
@@ -187,7 +190,8 @@ class UserAccessViewModel with ChangeNotifier {
             resourceDoc.getListOf<String>('$rolesFieldName:${user.userId}');
         // Replace user roles with resource roles if it isn't empty.
         if (resourceUserRoles.isNotEmpty) {
-          user.roles = resourceUserRoles.toSet();
+          user.roles.clear();
+          user.roles.addAll(resourceUserRoles);
         }
       }
       return users;
@@ -250,8 +254,15 @@ class UserAccessViewModel with ChangeNotifier {
 }
 
 mixin UserRole {
+  /// User's email address.
   late String userEmail;
-  late Set<String> roles;
+
+  /// Set of user's roles.
+  ///
+  /// Roles are sorted in alphabetical order.
+  final Set<String> roles = SplayTreeSet();
+
+  /// User's Firebase UID.
   String? get userId;
 }
 
@@ -266,7 +277,9 @@ class AppUserRole extends AppUser with UserRole {
             email: userEmail,
             description: userDisplay ?? userEmail) {
     this.userEmail = userEmail;
-    this.roles = (roles ?? []).toSet();
+    if (roles != null) {
+      this.roles.addAll(roles);
+    }
   }
 
   @override
@@ -281,7 +294,9 @@ class InviteRole with UserRole {
     List<String>? roles,
   }) {
     this.userEmail = userEmail;
-    this.roles = (roles ?? []).toSet();
+    if (roles != null) {
+      this.roles.addAll(roles);
+    }
   }
 
   @override
