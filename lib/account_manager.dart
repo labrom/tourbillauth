@@ -24,8 +24,8 @@ bool isAdmin(BuildContext context) =>
 /// This service expects the following Firestore structure:
 /// * a users collection keyed on the user's Firebase UID, default collection
 /// name: `users`
-/// * an invitations collection keyed on the email address, default collection
-/// name: `invites`
+/// * an invitations collection in which documents contain an `email` field,
+/// default collection name: `invites`
 /// * documents in the user and invite collections must have a string array
 /// field that lists the user's roles, default field name: `roles`
 /// * a user settings collection keyed on the user's Firebase UID, default
@@ -120,24 +120,32 @@ class AccountManager extends ManagerBase {
       firestoreProvider(_context)
           .instance
           .collection(inviteCollectionName)
-          .doc(userEmail!)
-          .delete();
+          .where('email', isEqualTo: userEmail)
+          .get()
+          .then((snapshot) {
+        // Should return one document at most
+        for (var doc in snapshot.docs) {
+          doc.reference.delete();
+        }
+      });
       return;
     }
     firestoreProvider(_context)
         .instance
         .collection(inviteCollectionName)
-        .doc(userEmail!)
+        .where('email', isEqualTo: userEmail)
         .get()
-        .then((doc) {
-      if (doc.exists) {
+        .then((snapshot) {
+      if (snapshot.docs.isNotEmpty) {
+        // Assume there's only one invite
+        final inviteDoc = snapshot.docs.first;
         firestoreProvider(_context)
             .instance
             .collection(userCollectionName)
             .doc(userId!)
             .set({
           'email': userEmail,
-          rolesFieldName: doc.getListOf(rolesFieldName),
+          rolesFieldName: inviteDoc.getListOf(rolesFieldName),
           'last-updated': DateTime.now(),
         });
         loadRoles();

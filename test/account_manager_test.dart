@@ -193,7 +193,8 @@ void main() {
   });
   testWidgets('convert invite', (tester) async {
     final firestore = FakeFirestoreWrapper();
-    await firestore.fake.collection('invites').doc('user1@my.org').set({
+    await firestore.fake.collection('invites').doc('invite1').set({
+      'email': 'user1@my.org',
       'roles': ['admin'],
     });
     final signInManager =
@@ -227,7 +228,8 @@ void main() {
   });
   testWidgets('convert invite, different names', (tester) async {
     final firestore = FakeFirestoreWrapper();
-    await firestore.fake.collection('flyers').doc('user1@my.org').set({
+    await firestore.fake.collection('flyers').doc('invite1').set({
+      'email': 'user1@my.org',
       'titles': ['emperor'],
     });
     final signInManager =
