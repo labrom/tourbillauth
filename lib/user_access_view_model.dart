@@ -11,12 +11,13 @@ import 'app_user.dart';
 
 /// A view model that allows to manage the app's users.
 ///
-/// This implementation of stores users in a Firestore collection, and resource
-/// user roles in a set of fields in the resource document. This resource document
-/// might be the actual resource document, or another document that is associated
-/// with this resource - with the same id - and only contains user roles for this
-/// resource. When working with a resource, a user or invited user only has access
-/// to this resource when the document contains a field for this user or invite.
+/// This implementation stores users and invitations in Firestore collection,
+/// and resource user roles in a set of fields in the resource document.
+/// This resource document might be the actual resource document, or another
+/// document that is associated with this resource - with the same id - and only
+/// contains user roles for this resource.
+/// When working with a resource, a user or invited user only has access to this
+/// resource when the document contains a field for this user or invite.
 /// This field contains the list of roles specific to this resource, for the associated
 /// user or invite. This field name's format is `roles:xxx` where `xxx` is either
 /// the user's UID or the document ID of the invite.
