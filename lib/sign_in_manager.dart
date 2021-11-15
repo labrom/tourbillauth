@@ -23,10 +23,12 @@ class SignInManager extends ChangeNotifier {
 
   bool get signedIn => _signedIn;
 
-  /// The Google user ID.
+  /// The user ID.
+  ///
+  /// This ID is the one that should be used by clients.
   ///
   /// Throws an exception is no user is signed in.
-  String get userId => _googleSignInAccount!.id;
+  String get userId => _firebaseUser!.uid;
 
   /// The Firebase user ID.
   ///
