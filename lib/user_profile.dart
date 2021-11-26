@@ -37,7 +37,7 @@ class _UserProfileState extends State<UserProfile> {
 
   @override
   Widget build(BuildContext context) {
-    var signIn = Provider.of<SignInManager>(context);
+    final signIn = Provider.of<SignInManager>(context);
     return Align(
       alignment: Alignment.bottomRight,
       child: Padding(
@@ -87,7 +87,7 @@ class _UserProfileState extends State<UserProfile> {
       _menuOverlay!.remove();
       _menuOverlay = null;
     } else {
-      var signIn = Provider.of<SignInManager>(context, listen: false);
+      final signIn = context.read<SignInManager>();
       if (signIn.signedIn) {
         _menuOverlay = OverlayEntry(builder: (_) => _menu);
         Overlay.of(context)!.insert(_menuOverlay!);
@@ -103,9 +103,9 @@ class _UserProfileState extends State<UserProfile> {
   }
 
   Widget get _menu {
-    var signon = Provider.of<SignInManager>(context, listen: false);
-    var renderBox = context.findRenderObject() as RenderBox;
-    var offset = renderBox.localToGlobal(Offset.zero);
+    final signIn = context.read<SignInManager>();
+    final renderBox = context.findRenderObject() as RenderBox;
+    final offset = renderBox.localToGlobal(Offset.zero);
     return Positioned(
       top: offset.dy + renderBox.size.height,
       right: 0,
@@ -157,7 +157,7 @@ class _UserProfileState extends State<UserProfile> {
                         shape: BoxShape.circle,
                         image: DecorationImage(
                           image: NetworkImage(
-                            signon.photoUrl,
+                            signIn.photoUrl,
                           ),
                         ),
                       ),
@@ -165,10 +165,10 @@ class _UserProfileState extends State<UserProfile> {
                   ),
                   Padding(
                     padding: EdgeInsets.only(top: 8),
-                    child: Text(signon.shortUserDescription,
+                    child: Text(signIn.shortUserDescription,
                         style: Theme.of(context).textTheme.subtitle1),
                   ),
-                  Text(signon.userEmail,
+                  Text(signIn.userEmail,
                       style: Theme.of(context).textTheme.caption),
                   TextButton(
                     child: Text(libloc(context).signOutButtonLabel),

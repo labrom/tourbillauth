@@ -76,7 +76,7 @@ class UserAccessViewModel with ChangeNotifier {
 
   void addInvite(String email,
       {String? resource, List<String> roles = const []}) {
-    var addInvite = firestoreProvider(_context)
+    final addInvite = firestoreProvider(_context)
         .instance
         .collection(inviteCollectionName)
         .add({
@@ -101,7 +101,7 @@ class UserAccessViewModel with ChangeNotifier {
       {required String email,
       String? resource,
       List<String> roles = const []}) {
-    var addUser = firestoreProvider(_context)
+    final addUser = firestoreProvider(_context)
         .instance
         .collection(userCollectionName)
         .doc(userId)
@@ -138,7 +138,7 @@ class UserAccessViewModel with ChangeNotifier {
 
     // If there is a non-stale resource doc in the cache, load roles of users
     // that are on the invite list
-    var resourceDoc = _resourceCache[resource];
+    final resourceDoc = _resourceCache[resource];
     if (resourceDoc != null) {
       // Check if resource doc has a roles entry for this invite
       // This role entry can be an empty role list
@@ -178,12 +178,12 @@ class UserAccessViewModel with ChangeNotifier {
 
     // If there is a non-stale resource doc in the cache, load roles of users
     // that are on the user list
-    var resourceDoc = _resourceCache[resource];
+    final resourceDoc = _resourceCache[resource];
     if (resourceDoc != null) {
       // Check if resource doc has a roles entry for this user
       // This role entry can be an empty role list
       // If there is no entry (different from empty list), the user is removed
-      var resourceData = resourceDoc.data() as Map<String, dynamic>;
+      final resourceData = resourceDoc.data() as Map<String, dynamic>;
       users.removeWhere((user) =>
           !resourceData.containsKey('$rolesFieldName:${user.userId}'));
       for (var user in users) {

@@ -101,15 +101,16 @@ class SignInManager extends ChangeNotifier {
   _onLogin(GoogleSignInAccount? account) async {
     if (account == null) return;
     _googleSignInAccount = account;
-    var googleSignInAuthentication = await _googleSignInAccount!.authentication;
+    final googleSignInAuthentication =
+        await _googleSignInAccount!.authentication;
 
-    var credential = GoogleAuthProvider.credential(
+    final credential = GoogleAuthProvider.credential(
       accessToken: googleSignInAuthentication.accessToken,
       idToken: googleSignInAuthentication.idToken,
     );
 
     // Get Firebase user
-    var authResult =
+    final authResult =
         await FirebaseAuth.instance.signInWithCredential(credential);
     _firebaseUser = authResult.user;
     assert(!_firebaseUser!.isAnonymous);

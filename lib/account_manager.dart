@@ -87,7 +87,7 @@ class AccountManager extends ManagerBase {
     if (!checkSignIn()) return;
     if (_rolesLoaded) return;
 
-    var previousRoles = List.of(_roles);
+    final previousRoles = List.of(_roles);
     try {
       firestoreProvider(_context)
           .instance
