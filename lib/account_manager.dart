@@ -8,8 +8,13 @@ import 'package:tourbillon/log.dart';
 import 'manager_base.dart';
 import 'sign_in_manager.dart';
 
-bool isAdmin(BuildContext context) =>
-    Provider.of<AccountManager>(context, listen: false).isAdmin;
+/// Tells whether or not the current user has the admin role.
+///
+/// This function requires an [AccountManager] to be present in the context.
+///
+/// Admin role's default name is `admin` but a different name can be specified
+/// in the [AccountManager] constructor.
+bool isAdmin(BuildContext context) => context.read<AccountManager>().isAdmin;
 
 /// A service provider for account management.
 ///
