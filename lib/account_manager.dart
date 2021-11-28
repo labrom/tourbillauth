@@ -77,6 +77,7 @@ class AccountManager extends ManagerBase {
     _rolesLoaded = false;
     _roles.clear();
     _settings.clear();
+    log.i('Cleared roles');
   }
 
   bool get rolesLoaded => _rolesLoaded;
@@ -103,6 +104,7 @@ class AccountManager extends ManagerBase {
           _isAdmin = _roles.contains(adminRole);
           if (!listEquals(_roles, previousRoles)) {
             notifyListeners();
+            log.i('Loaded roles');
           }
         } else {
           clear();
