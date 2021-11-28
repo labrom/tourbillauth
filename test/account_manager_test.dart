@@ -184,7 +184,7 @@ void main() {
       expect(accountManager.rolesLoaded, isTrue);
       expect(accountManager.roles.length, equals(1));
       expect(accountManager.isAdmin, isTrue);
-      firestore.fake.collection('users').doc('user1').delete();
+      await firestore.fake.collection('users').doc('user1').delete();
       await tester.pumpAndSettle();
       expect(accountManager.userId, equals('user1'));
       expect(accountManager.userEmail, equals('user1@my.org'));
