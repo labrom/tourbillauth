@@ -22,6 +22,14 @@ class LibLocalizations extends BaseLocalizations {
         en: 'SIGN OUT',
         fr: 'SE DÉCONNECTER',
       },
+      'userAccessViewTitle': {
+        en: 'Users',
+        fr: 'Utilisateurs',
+      },
+      'userResourceAccessViewTitle': {
+        en: 'User access to {}',
+        fr: 'Accès utilisateurs à {}',
+      },
     },
     builder: (locale, values) => LibLocalizations._(locale, values),
   );
@@ -32,4 +40,7 @@ class LibLocalizations extends BaseLocalizations {
   String get searchUserLabel => get('searchUserLabel');
   String get signInButtonLabel => get('signInButtonLabel');
   String get signOutButtonLabel => get('signOutButtonLabel');
+  String get userAccessViewTitle => get('userAccessViewTitle');
+  String userResourceAccessViewTitle(String resource) =>
+      get('userResourceAccessViewTitle').withParam(resource);
 }

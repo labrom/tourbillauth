@@ -8,6 +8,7 @@ import 'package:tourbillon/firestore.dart';
 import 'package:tourbillon/log.dart';
 
 import 'app_user.dart';
+import 'user_selector_model.dart';
 
 /// A view model that allows to manage the app's users.
 ///
@@ -26,7 +27,10 @@ import 'app_user.dart';
 ///
 /// This class doesn't perform any verification of the current user's role. If the
 /// current user doesn't have sufficient rights to manage other users, this view
-/// model shouldn't be used.
+/// model shouldn't be used, and it is expected that Firestore will return errors.
+///
+/// This class is a [ChangeNotifier] so clients can be notified when the underlying
+/// data changes.
 ///
 /// Adding users or invitations:
 /// Users are stored in the `users` collection by default (a different name can
@@ -46,7 +50,11 @@ import 'app_user.dart';
 /// The source of truth for access to resources is the user list. If a
 /// resource lists a role for a user, this user must also be present in the
 /// user list in order to have access to this resource.
-class UserAccessViewModel with ChangeNotifier {
+///
+/// This class also has a function that allows to search for users using a string
+/// query: [findUsers]. This functions only works if [userSelectorModel] is
+/// not `null`.
+class UserAccessViewModel with ChangeNotifier implements UserSelectorModel {
   final BuildContext _context;
   final DataProvider _userProvider;
   final String userCollectionName;
@@ -55,8 +63,12 @@ class UserAccessViewModel with ChangeNotifier {
   final String rolesFieldName;
   final Cache<DocumentSnapshot> _resourceCache = Cache();
 
+  /// An optional view model that allows to perform user text searches.
+  final UserSelectorModel? userSelectorModel;
+
   UserAccessViewModel(
     this._context, {
+    this.userSelectorModel,
     this.userCollectionName = 'users',
     this.inviteCollectionName = 'invites',
     this.rolesFieldName = 'roles',
@@ -72,6 +84,7 @@ class UserAccessViewModel with ChangeNotifier {
         ) {
     _userProvider.addListener(() => notifyListeners());
     _inviteProvider.addListener(() => notifyListeners());
+    userSelectorModel?.addListener(() => notifyListeners());
   }
 
   void addInvite(String email,
@@ -252,6 +265,14 @@ class UserAccessViewModel with ChangeNotifier {
     _userProvider.delete(userId);
     // Expect resource roles to be automatically deleted with a Firestore function.
   }
+
+  /// Runs a query on users using a search string.
+  ///
+  /// This functionality is entirely delegated to [userSelectorModel].
+  /// If [userSelectorModel] is `null`, this function always returns an empty list.
+  @override
+  List<AppUser> findUsers(String query) =>
+      userSelectorModel?.findUsers(query) ?? [];
 }
 
 mixin UserRole {
