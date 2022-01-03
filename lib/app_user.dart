@@ -18,4 +18,7 @@ class AppUser {
     }
     return true;
   }
+
+  @override
+  String toString() => description ?? email;
 }
