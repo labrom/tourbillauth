@@ -5,28 +5,28 @@ import 'package:provider/provider.dart';
 import 'package:tourbillon/firestore.dart';
 import 'package:tourbillon/log.dart';
 
-import 'manager_base.dart';
+import 'sign_in_aware_directory.dart';
 import 'sign_in_manager.dart';
 
 /// Tells whether or not the current user has the admin role.
 ///
-/// This function requires an [AccountManager] to be present in the context.
+/// This function requires an [AccountDirectory] to be present in the context.
 ///
 /// Admin role's default name is `admin` but a different name can be specified
-/// in the [AccountManager] constructor.
-bool isAdmin(BuildContext context) => context.read<AccountManager>().isAdmin;
+/// in the [AccountDirectory] constructor.
+bool isAdmin(BuildContext context) => context.read<AccountDirectory>().isAdmin;
 
-/// A service provider for account management.
+/// A directory service provider for account management.
 ///
-/// This service loads current user's role and settings stored in Firestore.
+/// This directory loads current user's role and settings stored in Firestore.
 /// It also tells if the current user is an admin. A user is an admin if one
 /// of their roles is the admin role. By default, the admin role is `admin`.
 ///
-/// This service also handles registering the current Firebase user if they
+/// This directory also handles registering the current Firebase user if they
 /// don't have a user entry in the application yet, and there is an invitation
 /// with a matching email address.
 ///
-/// This service expects the following Firestore structure:
+/// This directory expects the following Firestore structure:
 /// * a users collection keyed on the user's Firebase UID, default collection
 /// name: `users`
 /// * an invitations collection in which documents contain an `email` field,
@@ -37,7 +37,7 @@ bool isAdmin(BuildContext context) => context.read<AccountManager>().isAdmin;
 /// collection name: `user-settings`
 /// * documents in the user settings collection contain a map of settings names
 /// and values
-class AccountManager extends ManagerBase {
+class AccountDirectory extends SignInAwareDirectory {
   final BuildContext _context;
   final String userCollectionName;
   final String adminRole;
@@ -50,7 +50,7 @@ class AccountManager extends ManagerBase {
 
   final Map<String, dynamic> _settings = {};
 
-  AccountManager(
+  AccountDirectory(
     this._context,
     SignInManager signInManager, {
     this.userCollectionName = 'users',

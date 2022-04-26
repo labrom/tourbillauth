@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:provider/provider.dart';
-import 'package:tourbillauth/account_manager.dart';
+import 'package:tourbillauth/account_directory.dart';
 import 'package:tourbillauth/sign_in_manager.dart';
 import 'package:tourbillon/fake_firestore.dart';
 import 'package:tourbillon/firestore.dart';
@@ -12,12 +12,12 @@ void main() {
       final firestore = FakeFirestoreWrapper();
       final signInManager =
           SignInManager.fakeUser(userId: 'user1', userEmail: 'user1@my.org');
-      late AccountManager accountManager;
+      late AccountDirectory accountManager;
       await tester.pumpWidget(Provider<FirestoreInterface>.value(
         value: firestore,
         child: ChangeNotifierProvider(
           create: (context) {
-            accountManager = AccountManager(context, signInManager);
+            accountManager = AccountDirectory(context, signInManager);
             return accountManager;
           },
           lazy: false,
@@ -40,12 +40,12 @@ void main() {
       });
       final signInManager =
           SignInManager.fakeUser(userId: 'user1', userEmail: 'user1@my.org');
-      late AccountManager accountManager;
+      late AccountDirectory accountManager;
       await tester.pumpWidget(Provider<FirestoreInterface>.value(
         value: firestore,
         child: ChangeNotifierProvider(
           create: (context) {
-            accountManager = AccountManager(context, signInManager);
+            accountManager = AccountDirectory(context, signInManager);
             return accountManager;
           },
           lazy: false,
@@ -68,12 +68,12 @@ void main() {
       });
       final signInManager =
           SignInManager.fakeUser(userId: 'user1', userEmail: 'user1@my.org');
-      late AccountManager accountManager;
+      late AccountDirectory accountManager;
       await tester.pumpWidget(Provider<FirestoreInterface>.value(
         value: firestore,
         child: ChangeNotifierProvider(
           create: (context) {
-            accountManager = AccountManager(context, signInManager);
+            accountManager = AccountDirectory(context, signInManager);
             return accountManager;
           },
           lazy: false,
@@ -96,12 +96,12 @@ void main() {
       });
       final signInManager =
           SignInManager.fakeUser(userId: 'user1', userEmail: 'user1@my.org');
-      late AccountManager accountManager;
+      late AccountDirectory accountManager;
       await tester.pumpWidget(Provider<FirestoreInterface>.value(
         value: firestore,
         child: ChangeNotifierProvider(
           create: (context) {
-            accountManager = AccountManager(
+            accountManager = AccountDirectory(
               context,
               signInManager,
               adminRole: 'emperor',
@@ -130,12 +130,12 @@ void main() {
       });
       final signInManager =
           SignInManager.fakeUser(userId: 'user1', userEmail: 'user1@my.org');
-      late AccountManager accountManager;
+      late AccountDirectory accountManager;
       await tester.pumpWidget(Provider<FirestoreInterface>.value(
         value: firestore,
         child: ChangeNotifierProvider(
           create: (context) {
-            accountManager = AccountManager(context, signInManager);
+            accountManager = AccountDirectory(context, signInManager);
             return accountManager;
           },
           lazy: false,
@@ -165,12 +165,12 @@ void main() {
       });
       final signInManager =
           SignInManager.fakeUser(userId: 'user1', userEmail: 'user1@my.org');
-      late AccountManager accountManager;
+      late AccountDirectory accountManager;
       await tester.pumpWidget(Provider<FirestoreInterface>.value(
         value: firestore,
         child: ChangeNotifierProvider(
           create: (context) {
-            accountManager = AccountManager(context, signInManager);
+            accountManager = AccountDirectory(context, signInManager);
             return accountManager;
           },
           lazy: false,
@@ -202,12 +202,12 @@ void main() {
       });
       final signInManager =
           SignInManager.fakeUser(userId: 'user1', userEmail: 'user1@my.org');
-      late AccountManager accountManager;
+      late AccountDirectory accountManager;
       await tester.pumpWidget(Provider<FirestoreInterface>.value(
         value: firestore,
         child: ChangeNotifierProvider(
           create: (context) {
-            accountManager = AccountManager(context, signInManager);
+            accountManager = AccountDirectory(context, signInManager);
             return accountManager;
           },
           lazy: false,
@@ -237,12 +237,12 @@ void main() {
       });
       final signInManager =
           SignInManager.fakeUser(userId: 'user1', userEmail: 'user1@my.org');
-      late AccountManager accountManager;
+      late AccountDirectory accountManager;
       await tester.pumpWidget(Provider<FirestoreInterface>.value(
         value: firestore,
         child: ChangeNotifierProvider(
           create: (context) {
-            accountManager = AccountManager(
+            accountManager = AccountDirectory(
               context,
               signInManager,
               adminRole: 'emperor',
@@ -275,12 +275,12 @@ void main() {
       final firestore = FakeFirestoreWrapper();
       final signInManager =
           SignInManager.fakeUser(userId: 'user1', userEmail: 'user1@my.org');
-      late AccountManager accountManager;
+      late AccountDirectory accountManager;
       await tester.pumpWidget(Provider<FirestoreInterface>.value(
         value: firestore,
         child: ChangeNotifierProvider(
           create: (context) {
-            accountManager = AccountManager(context, signInManager);
+            accountManager = AccountDirectory(context, signInManager);
             return accountManager;
           },
           lazy: false,
@@ -313,12 +313,12 @@ void main() {
       });
       final signInManager =
           SignInManager.fakeUser(userId: 'user1', userEmail: 'user1@my.org');
-      late AccountManager accountManager;
+      late AccountDirectory accountManager;
       await tester.pumpWidget(Provider<FirestoreInterface>.value(
         value: firestore,
         child: ChangeNotifierProvider(
           create: (context) {
-            accountManager = AccountManager(context, signInManager);
+            accountManager = AccountDirectory(context, signInManager);
             return accountManager;
           },
           lazy: false,
@@ -350,12 +350,12 @@ void main() {
       });
       final signInManager =
           SignInManager.fakeUser(userId: 'user1', userEmail: 'user1@my.org');
-      late AccountManager accountManager;
+      late AccountDirectory accountManager;
       await tester.pumpWidget(Provider<FirestoreInterface>.value(
         value: firestore,
         child: ChangeNotifierProvider(
           create: (context) {
-            accountManager = AccountManager(context, signInManager);
+            accountManager = AccountDirectory(context, signInManager);
             return accountManager;
           },
           lazy: false,
@@ -374,12 +374,12 @@ void main() {
       });
       final signInManager =
           SignInManager.fakeUser(userId: 'user1', userEmail: 'user1@my.org');
-      late AccountManager accountManager;
+      late AccountDirectory accountManager;
       await tester.pumpWidget(Provider<FirestoreInterface>.value(
         value: firestore,
         child: ChangeNotifierProvider(
           create: (context) {
-            accountManager = AccountManager(context, signInManager);
+            accountManager = AccountDirectory(context, signInManager);
             return accountManager;
           },
           lazy: false,

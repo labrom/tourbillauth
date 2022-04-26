@@ -2,11 +2,11 @@ import 'package:flutter/foundation.dart';
 
 import 'sign_in_manager.dart';
 
-abstract class ManagerBase extends ChangeNotifier {
+abstract class SignInAwareDirectory extends ChangeNotifier {
   final SignInManager signInManager;
   String? _userId;
 
-  ManagerBase(this.signInManager) {
+  SignInAwareDirectory(this.signInManager) {
     signInManager.addListener(_onSignInManagerNotify);
   }
 

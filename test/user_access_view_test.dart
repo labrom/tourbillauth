@@ -3,8 +3,8 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 import 'package:provider/provider.dart';
-import 'package:tourbillauth/account_manager.dart';
-import 'package:tourbillauth/directory_manager.dart';
+import 'package:tourbillauth/account_directory.dart';
+import 'package:tourbillauth/user_directory.dart';
 import 'package:tourbillauth/libloc.dart';
 import 'package:tourbillauth/sign_in_manager.dart';
 import 'package:tourbillauth/user_access_view.dart';
@@ -112,10 +112,10 @@ void main() {
               providers: [
                 Provider<FirestoreInterface>.value(value: firestore),
                 ChangeNotifierProvider(
-                  create: (context) => AccountManager(context, signInManager),
+                  create: (context) => AccountDirectory(context, signInManager),
                 ),
                 ChangeNotifierProvider(
-                  create: (context) => DirectoryManager(context, signInManager),
+                  create: (context) => UserDirectory(context, signInManager),
                 ),
               ],
               builder: (context, _) => UserAccessView.forResource(

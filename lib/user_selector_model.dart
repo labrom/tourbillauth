@@ -2,19 +2,19 @@ import 'package:flutter/widgets.dart';
 import 'package:provider/provider.dart';
 
 import 'app_user.dart';
-import 'directory_manager.dart';
+import 'user_directory.dart';
 
 /// A view model for searching users.
 ///
-/// This view model requires a [DirectoryManager] to be present in the context.
+/// This view model requires a [UserDirectory] to be present in the context.
 ///
 /// This class is a [ChangeNotifier] so clients can be notified when the underlying
 /// data changes.
 class UserSelectorModel with ChangeNotifier {
-  final DirectoryManager _directory;
+  final UserDirectory _directory;
 
   UserSelectorModel(BuildContext context)
-      : _directory = context.read<DirectoryManager>() {
+      : _directory = context.read<UserDirectory>() {
     _directory.addListener(() => notifyListeners());
     _directory.loadUsers();
   }
