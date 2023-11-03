@@ -90,7 +90,7 @@ class _UserProfileState extends State<UserProfile> {
       final signIn = context.read<SignInManager>();
       if (signIn.signedIn) {
         _menuOverlay = OverlayEntry(builder: (_) => _menu);
-        Overlay.of(context)!.insert(_menuOverlay!);
+        Overlay.of(context).insert(_menuOverlay!);
       } else {
         signIn.signIn();
       }

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:provider/provider.dart';
-import 'package:tourbillauth/account_directory.dart';
+import 'package:tourbillauth/account_repository.dart';
 import 'package:tourbillauth/user_directory.dart';
 import 'package:tourbillauth/sign_in_manager.dart';
 import 'package:tourbillon/fake_firestore.dart';
@@ -18,7 +18,7 @@ void main() {
       child: MultiProvider(
         providers: [
           ChangeNotifierProvider(
-            create: (context) => AccountDirectory(context, signInManager),
+            create: (context) => AccountRepository(context, signInManager),
           ),
           ChangeNotifierProvider(
             create: (context) {
@@ -49,7 +49,7 @@ void main() {
       child: MultiProvider(
         providers: [
           ChangeNotifierProvider(
-            create: (context) => AccountDirectory(context, signInManager),
+            create: (context) => AccountRepository(context, signInManager),
           ),
           ChangeNotifierProvider(
             create: (context) {
@@ -80,7 +80,7 @@ void main() {
       child: MultiProvider(
         providers: [
           ChangeNotifierProvider(
-            create: (context) => AccountDirectory(context, signInManager),
+            create: (context) => AccountRepository(context, signInManager),
           ),
           ChangeNotifierProvider(
             create: (context) {

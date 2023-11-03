@@ -2,19 +2,20 @@ import 'package:flutter/widgets.dart';
 import 'package:provider/provider.dart';
 import 'package:tourbillon/firestore.dart';
 
-import 'account_directory.dart';
+import 'account_repository.dart';
 import 'app_user.dart';
-import 'sign_in_aware_directory.dart';
+import 'sign_in_aware_repository.dart';
 import 'sign_in_manager.dart';
 
 /// A directory service provider that gives access to registered users.
 ///
+/// This directory will remain empty if the current user doesn't have the admin role.
 /// Users are stored in the `users` collection by default (a different name can
 /// be specified), where document IDs are the user's UID. Documents contain a
 /// mandatory `email` field and an optional `display` fields.
 ///
-/// This widget requires an [AccountDirectory] to be present in the context.
-class UserDirectory extends SignInAwareDirectory {
+/// This widget requires an [AccountRepository] to be present in the context.
+class UserDirectory extends SignInAwareRepository {
   final BuildContext _context;
   final List<AppUser> _users = [];
   final String userCollectionName;
@@ -25,7 +26,7 @@ class UserDirectory extends SignInAwareDirectory {
     this.userCollectionName = 'users',
   }) : super(signInManager) {
     final accountManager =
-        Provider.of<AccountDirectory>(_context, listen: false);
+        Provider.of<AccountRepository>(_context, listen: false);
     accountManager.addListener(() {
       if (accountManager.isAdmin) {
         loadUsers();

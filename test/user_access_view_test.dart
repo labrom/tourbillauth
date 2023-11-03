@@ -3,7 +3,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 import 'package:provider/provider.dart';
-import 'package:tourbillauth/account_directory.dart';
+import 'package:tourbillauth/account_repository.dart';
 import 'package:tourbillauth/user_directory.dart';
 import 'package:tourbillauth/libloc.dart';
 import 'package:tourbillauth/sign_in_manager.dart';
@@ -112,7 +112,8 @@ void main() {
               providers: [
                 Provider<FirestoreInterface>.value(value: firestore),
                 ChangeNotifierProvider(
-                  create: (context) => AccountDirectory(context, signInManager),
+                  create: (context) =>
+                      AccountRepository(context, signInManager),
                 ),
                 ChangeNotifierProvider(
                   create: (context) => UserDirectory(context, signInManager),

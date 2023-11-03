@@ -5,16 +5,16 @@ import 'package:provider/provider.dart';
 import 'package:tourbillon/firestore.dart';
 import 'package:tourbillon/log.dart';
 
-import 'sign_in_aware_directory.dart';
+import 'sign_in_aware_repository.dart';
 import 'sign_in_manager.dart';
 
 /// Tells whether or not the current user has the admin role.
 ///
-/// This function requires an [AccountDirectory] to be present in the context.
+/// This function requires an [AccountRepository] to be present in the context.
 ///
 /// Admin role's default name is `admin` but a different name can be specified
-/// in the [AccountDirectory] constructor.
-bool isAdmin(BuildContext context) => context.read<AccountDirectory>().isAdmin;
+/// in the [AccountRepository] constructor.
+bool isAdmin(BuildContext context) => context.read<AccountRepository>().isAdmin;
 
 /// A directory service provider for account management.
 ///
@@ -37,7 +37,7 @@ bool isAdmin(BuildContext context) => context.read<AccountDirectory>().isAdmin;
 /// collection name: `user-settings`
 /// * documents in the user settings collection contain a map of settings names
 /// and values
-class AccountDirectory extends SignInAwareDirectory {
+class AccountRepository extends SignInAwareRepository {
   final BuildContext _context;
   final String userCollectionName;
   final String adminRole;
@@ -50,7 +50,7 @@ class AccountDirectory extends SignInAwareDirectory {
 
   final Map<String, dynamic> _settings = {};
 
-  AccountDirectory(
+  AccountRepository(
     this._context,
     SignInManager signInManager, {
     this.userCollectionName = 'users',
