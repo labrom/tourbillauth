@@ -11,8 +11,11 @@ dependencies:
     sdk: flutter
   cloud_firestore:
   firebase_auth:
+  firebase_ui_auth:
+  firebase_ui_oauth_google:
+  flutter_riverpod:
   google_sign_in:
-  provider:
+  riverpod_annotation:
   tourbillon:
     git:
       https://github.com/labrom/tourbillon.git
@@ -24,6 +27,7 @@ dev_dependencies:
   fake_cloud_firestore:
   flutter_lints: ^1.0.0
   mockito:
+  riverpod_generator:
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
