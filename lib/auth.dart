@@ -1,7 +1,8 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
-import 'package:tourbillauth/config.dart';
 import 'package:tourbillon/firestore.dart';
+
+import 'config.dart';
 
 part 'auth.g.dart';
 
