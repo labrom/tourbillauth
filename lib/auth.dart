@@ -9,11 +9,13 @@ part 'auth.g.dart';
 @riverpod
 FirebaseAuth firebaseAuth(_) => FirebaseAuth.instance;
 
-final authStateChangesProvider = StreamProvider.autoDispose<User?>(
-    (ref) => ref.watch(firebaseAuthProvider).authStateChanges());
+@riverpod
+Stream<User?> authStateChanges(AuthStateChangesRef ref) =>
+    ref.watch(firebaseAuthProvider).authStateChanges();
 
 @riverpod
-String? userId(_) => FirebaseAuth.instance.currentUser?.uid;
+String? userId(UserIdRef ref) =>
+    ref.watch(firebaseAuthProvider).currentUser?.uid;
 
 @riverpod
 Future<List<String>> userRoles(UserRolesRef ref) async {

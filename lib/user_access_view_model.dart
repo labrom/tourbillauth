@@ -1,5 +1,3 @@
-import 'dart:collection';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/widgets.dart';
 import 'package:tourbillon/cache.dart';
@@ -7,7 +5,7 @@ import 'package:tourbillon/data_provider.dart';
 import 'package:tourbillon/firestore.dart';
 import 'package:tourbillon/log.dart';
 
-import 'app_user.dart';
+import 'model.dart';
 import 'user_selector_model.dart';
 
 /// A view model that allows to manage the app's users.
@@ -273,54 +271,4 @@ class UserAccessViewModel with ChangeNotifier implements UserSelectorModel {
   @override
   List<AppUser> findUsers(String query) =>
       userSelectorModel?.findUsers(query) ?? [];
-}
-
-mixin UserRole {
-  /// User's email address.
-  late String userEmail;
-
-  /// Set of user's roles.
-  ///
-  /// Roles are sorted in alphabetical order.
-  final Set<String> roles = SplayTreeSet();
-
-  /// User's Firebase UID.
-  String? get userId;
-}
-
-class AppUserRole extends AppUser with UserRole {
-  AppUserRole(
-    String userId,
-    String userEmail, {
-    String? userDisplay,
-    List<String>? roles,
-  }) : super(
-            uid: userId,
-            email: userEmail,
-            description: userDisplay ?? userEmail) {
-    this.userEmail = userEmail;
-    if (roles != null) {
-      this.roles.addAll(roles);
-    }
-  }
-
-  @override
-  String? get userId => uid;
-}
-
-class InviteRole with UserRole {
-  String? docId;
-  InviteRole({
-    required String userEmail,
-    this.docId,
-    List<String>? roles,
-  }) {
-    this.userEmail = userEmail;
-    if (roles != null) {
-      this.roles.addAll(roles);
-    }
-  }
-
-  @override
-  String? get userId => null;
 }

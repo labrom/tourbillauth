@@ -20,7 +20,22 @@ final firebaseAuthProvider = AutoDisposeProvider<FirebaseAuth>.internal(
 );
 
 typedef FirebaseAuthRef = AutoDisposeProviderRef<FirebaseAuth>;
-String _$userIdHash() => r'cfc896200d38d134777aa4067534a3232e7f6d76';
+String _$authStateChangesHash() => r'2b158df96a6d40cabbdda83370c6cddc7ef1f1f5';
+
+/// See also [authStateChanges].
+@ProviderFor(authStateChanges)
+final authStateChangesProvider = AutoDisposeStreamProvider<User?>.internal(
+  authStateChanges,
+  name: r'authStateChangesProvider',
+  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
+      ? null
+      : _$authStateChangesHash,
+  dependencies: null,
+  allTransitiveDependencies: null,
+);
+
+typedef AuthStateChangesRef = AutoDisposeStreamProviderRef<User?>;
+String _$userIdHash() => r'aae1772ac5c6616c7ef17fea75d1efa4d874a782';
 
 /// See also [userId].
 @ProviderFor(userId)

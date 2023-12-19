@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:tourbillon/search_field.dart';
 
-import 'app_user.dart';
 import 'libloc.dart';
+import 'model.dart';
 import 'user_selector_model.dart';
 
 /// A widget that allows to search for and select a user.

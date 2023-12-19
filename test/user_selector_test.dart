@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
-import 'package:tourbillauth/app_user.dart';
+import 'package:tourbillauth/model.dart';
 import 'package:tourbillauth/user_selector.dart';
 import 'package:tourbillauth/user_selector_model.dart';
 import 'package:tourbillauth/libloc.dart';

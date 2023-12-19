@@ -3,7 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:tourbillon/firestore.dart';
 
 import 'account_repository.dart';
-import 'app_user.dart';
+import 'model.dart';
 import 'sign_in_aware_repository.dart';
 import 'sign_in_manager.dart';
 

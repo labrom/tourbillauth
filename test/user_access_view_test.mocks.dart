@@ -6,7 +6,7 @@
 import 'dart:ui' as _i4;
 
 import 'package:mockito/mockito.dart' as _i1;
-import 'package:tourbillauth/app_user.dart' as _i3;
+import 'package:tourbillauth/model.dart' as _i3;
 import 'package:tourbillauth/user_access_view_model.dart' as _i2;
 
 // ignore_for_file: type=lint
@@ -92,35 +92,35 @@ class MockUserAccessViewModel extends _i1.Mock
       );
 
   @override
-  List<_i2.InviteRole> listInvites({String? resource}) => (super.noSuchMethod(
+  List<_i3.InviteRole> listInvites({String? resource}) => (super.noSuchMethod(
         Invocation.method(
           #listInvites,
           [],
           {#resource: resource},
         ),
-        returnValue: <_i2.InviteRole>[],
-      ) as List<_i2.InviteRole>);
+        returnValue: <_i3.InviteRole>[],
+      ) as List<_i3.InviteRole>);
 
   @override
-  List<_i2.AppUserRole> listUsers({String? resource}) => (super.noSuchMethod(
+  List<_i3.AppUserRole> listUsers({String? resource}) => (super.noSuchMethod(
         Invocation.method(
           #listUsers,
           [],
           {#resource: resource},
         ),
-        returnValue: <_i2.AppUserRole>[],
-      ) as List<_i2.AppUserRole>);
+        returnValue: <_i3.AppUserRole>[],
+      ) as List<_i3.AppUserRole>);
 
   @override
-  List<_i2.UserRole> listUsersAndInvites({String? resource}) =>
+  List<_i3.UserRole> listUsersAndInvites({String? resource}) =>
       (super.noSuchMethod(
         Invocation.method(
           #listUsersAndInvites,
           [],
           {#resource: resource},
         ),
-        returnValue: <_i2.UserRole>[],
-      ) as List<_i2.UserRole>);
+        returnValue: <_i3.UserRole>[],
+      ) as List<_i3.UserRole>);
 
   @override
   void removeInvite(

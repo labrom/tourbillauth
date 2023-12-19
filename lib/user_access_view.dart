@@ -4,6 +4,7 @@ import 'package:tourbillon/email_address_input_form.dart';
 import 'package:tourbillon/libloc.dart' as tourbilloc;
 
 import 'libloc.dart' as loc;
+import 'model.dart';
 import 'user_access_view_model.dart';
 import 'user_selector.dart';
 
