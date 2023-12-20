@@ -1,8 +1,10 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:tourbillon/firestore.dart';
 
 import 'config.dart';
+import 'model.dart';
 
 part 'auth.g.dart';
 
@@ -14,15 +16,34 @@ Stream<User?> authStateChanges(AuthStateChangesRef ref) =>
     ref.watch(firebaseAuthProvider).authStateChanges();
 
 @riverpod
-String? userId(UserIdRef ref) =>
-    ref.watch(firebaseAuthProvider).currentUser?.uid;
+User? user(UserRef ref) => ref.watch(firebaseAuthProvider).currentUser;
 
 @riverpod
-Future<List<String>> userRoles(UserRolesRef ref) async {
-  final snapshot = await ref
-      .read(firebaseFirestoreProvider)
-      .collection(ref.read(userCollectionNameProvider))
-      .doc(ref.watch(userIdProvider))
-      .get();
-  return snapshot.getListOf<String>(ref.read(rolesFieldNameProvider));
+String? userId(UserIdRef ref) => ref.watch(userProvider)?.uid;
+
+@riverpod
+Future<AppUser?> appUser(AppUserRef ref) async {
+  return ref.watch(authStateChangesProvider).when(
+      data: (user) async {
+        if (user != null) {
+          final doc = ref
+              .read(firebaseFirestoreProvider)
+              .collection(ref.read(userCollectionNameProvider))
+              .doc(ref.watch(userIdProvider));
+          final snapshot = await doc.get();
+          if (!snapshot.exists) {
+            final user = ref.watch(userProvider);
+            if (user != null) {
+              doc.set({
+                'email': user.email,
+              }, SetOptions(merge: true));
+            }
+          }
+          return AppUser(uid: user.uid, email: user.email ?? '');
+        } else {
+          return null;
+        }
+      },
+      loading: () => null,
+      error: (err, stack) => null);
 }

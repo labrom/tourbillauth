@@ -35,7 +35,21 @@ final authStateChangesProvider = AutoDisposeStreamProvider<User?>.internal(
 );
 
 typedef AuthStateChangesRef = AutoDisposeStreamProviderRef<User?>;
-String _$userIdHash() => r'aae1772ac5c6616c7ef17fea75d1efa4d874a782';
+String _$userHash() => r'95177f2c8b07a167fe6733bc1a3425653bd7491e';
+
+/// See also [user].
+@ProviderFor(user)
+final userProvider = AutoDisposeProvider<User?>.internal(
+  user,
+  name: r'userProvider',
+  debugGetCreateSourceHash:
+      const bool.fromEnvironment('dart.vm.product') ? null : _$userHash,
+  dependencies: null,
+  allTransitiveDependencies: null,
+);
+
+typedef UserRef = AutoDisposeProviderRef<User?>;
+String _$userIdHash() => r'74ad07285a27f7bc95384b6f97107fb1f740cc8c';
 
 /// See also [userId].
 @ProviderFor(userId)
@@ -49,19 +63,19 @@ final userIdProvider = AutoDisposeProvider<String?>.internal(
 );
 
 typedef UserIdRef = AutoDisposeProviderRef<String?>;
-String _$userRolesHash() => r'c72c7643c5af20fc92ad5c303da6c6f99d6b83d4';
+String _$appUserHash() => r'f2faca046e366e87f64db323c8b1b652a849921f';
 
-/// See also [userRoles].
-@ProviderFor(userRoles)
-final userRolesProvider = AutoDisposeFutureProvider<List<String>>.internal(
-  userRoles,
-  name: r'userRolesProvider',
+/// See also [appUser].
+@ProviderFor(appUser)
+final appUserProvider = AutoDisposeFutureProvider<AppUser?>.internal(
+  appUser,
+  name: r'appUserProvider',
   debugGetCreateSourceHash:
-      const bool.fromEnvironment('dart.vm.product') ? null : _$userRolesHash,
+      const bool.fromEnvironment('dart.vm.product') ? null : _$appUserHash,
   dependencies: null,
   allTransitiveDependencies: null,
 );
 
-typedef UserRolesRef = AutoDisposeFutureProviderRef<List<String>>;
+typedef AppUserRef = AutoDisposeFutureProviderRef<AppUser?>;
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member
