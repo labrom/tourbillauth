@@ -80,7 +80,7 @@ class _UserProfileState extends State<UserProfile> {
 
   TextStyle get _textStyle =>
       AppBarTheme.of(context).toolbarTextStyle ??
-      Theme.of(context).primaryTextTheme.bodyText2!;
+      Theme.of(context).primaryTextTheme.bodyMedium!;
 
   void _toggleMenu() {
     if (_menuOverlay != null) {
@@ -166,10 +166,10 @@ class _UserProfileState extends State<UserProfile> {
                   Padding(
                     padding: EdgeInsets.only(top: 8),
                     child: Text(signIn.shortUserDescription,
-                        style: Theme.of(context).textTheme.subtitle1),
+                        style: Theme.of(context).textTheme.titleMedium),
                   ),
                   Text(signIn.userEmail,
-                      style: Theme.of(context).textTheme.caption),
+                      style: Theme.of(context).textTheme.bodySmall),
                   TextButton(
                     child: Text(libloc(context).signOutButtonLabel),
                     onPressed: _signOut,

@@ -54,7 +54,7 @@ class UserAccessView extends StatelessWidget {
   List<Widget> _withResource(BuildContext context) => [
         Text(
           loc.libloc(context).userResourceAccessViewTitle(resource!),
-          style: Theme.of(context).textTheme.headline2,
+          style: Theme.of(context).textTheme.displayMedium,
         ),
         if (allowEmailsForResource)
           _EmailAddressRoleAdd(
@@ -83,7 +83,7 @@ class UserAccessView extends StatelessWidget {
   List<Widget> _withoutResource(BuildContext context) => [
         Text(
           loc.libloc(context).userAccessViewTitle,
-          style: Theme.of(context).textTheme.headline2,
+          style: Theme.of(context).textTheme.displayMedium,
         ),
         _EmailAddressRoleAdd(
           viewModel,
