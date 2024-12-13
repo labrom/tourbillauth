@@ -2,34 +2,28 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/foundation.dart';
 import 'package:google_sign_in/google_sign_in.dart';
-import 'package:tourbillon/log.dart';
 
 /// A service provider for user sign-in.
 class SignInManager extends ChangeNotifier {
   final GoogleSignIn _googleSignIn;
   GoogleSignInAccount? _googleSignInAccount;
   User? _firebaseUser;
-  var _signedIn = false;
 
   SignInManager() : _googleSignIn = GoogleSignIn() {
     Firebase.initializeApp();
-    _googleSignIn.onCurrentUserChanged
-        .listen((GoogleSignInAccount? googleSignInAccount) {
-      if (googleSignInAccount != null) {
-        _onGoogleLogin(googleSignInAccount);
-      } else {
-        _reset();
-        notifyListeners();
-      }
-    });
     FirebaseAuth.instance.authStateChanges().listen((User? user) {
       if (user != null) {
         _firebaseUser = user;
-        _signedIn = true;
       } else {
         _reset();
       }
       notifyListeners();
+    });
+
+    // Record Google sign in for direct access to auth headers
+    _googleSignIn.onCurrentUserChanged
+        .listen((GoogleSignInAccount? googleSignInAccount) {
+          _googleSignInAccount = googleSignInAccount;
     });
   }
 
@@ -39,14 +33,12 @@ class SignInManager extends ChangeNotifier {
   }) =>
       _FakeSignInManager(userId: userId, userEmail: userEmail);
 
-  bool get signedIn => _signedIn;
+  bool get signedIn => _firebaseUser != null;
 
-  /// The user ID.
-  ///
-  /// This ID is the one that should be used by clients.
+  /// The user ID for the underlying auth provider (Google).
   ///
   /// Throws an exception if no user is signed in.
-  String get userId => _firebaseUser!.uid;
+  String get userId => _googleSignInAccount!.id;
 
   /// The Firebase user ID.
   ///
@@ -56,75 +48,49 @@ class SignInManager extends ChangeNotifier {
   /// The user's email address.
   ///
   /// Throws an exception if no user is signed in.
-  String get userEmail => _googleSignInAccount!.email;
+  String get userEmail => _firebaseUser!.email ?? '';
 
   /// A description of the signed-in user.
   ///
   /// Throws an exception if no user is signed in.
-  String get userDescription =>
-      '${_googleSignInAccount!.displayName} (${_googleSignInAccount!.email})';
+  String get userDescription => _firebaseUser!.displayName == null
+      ? userEmail
+      : '${_firebaseUser!.displayName} ($userEmail)';
 
   /// A short description of the signed-in user.
   ///
   /// Throws an exception if no user is signed in.
-  String get shortUserDescription => _googleSignInAccount!.displayName ?? '';
+  String get shortUserDescription => _firebaseUser!.displayName ?? '';
 
   /// The signed-in user profile photo URL.
   ///
   /// Throws an exception if no user is signed in.
-  String get photoUrl => _googleSignInAccount!.photoUrl ?? '';
+  String get photoUrl => _firebaseUser!.photoURL ?? '';
 
   Future<Map<String, String>> get authHeaders async {
-    if (!_signedIn || _googleSignInAccount == null) {
-      await signIn();
+    if (_googleSignInAccount == null) {
+      await FirebaseAuth.instance.signInWithProvider(GoogleAuthProvider());
     }
     return _googleSignInAccount!.authHeaders;
   }
 
-  signIn() {
-    if (_signedIn && _googleSignInAccount != null) {
-      try {
-        _googleSignIn.signInSilently().whenComplete(() => () {
-              notifyListeners();
-            });
-      } catch (e) {
-        log.e('Sign in error: $e');
-        _reset();
-        notifyListeners();
-      }
-    } else {
-      _googleSignIn.signIn();
-    }
+  void signIn() {
+    FirebaseAuth.instance.signInWithProvider(GoogleAuthProvider());
   }
 
   void signOut() {
-    _googleSignIn.signOut();
+    FirebaseAuth.instance.signOut();
   }
 
   void _reset() {
     _googleSignInAccount = null;
     _firebaseUser = null;
-    _signedIn = false;
-  }
-
-  void _onGoogleLogin(GoogleSignInAccount? account) async {
-    if (account == null) {
-      _reset();
-      return;
-    }
-    _googleSignInAccount = account;
-    final googleAuth = await _googleSignInAccount!.authentication;
-
-    // Get Firebase user
-    await FirebaseAuth.instance
-        .signInWithCredential(GoogleAuthProvider.credential(
-      accessToken: googleAuth.accessToken,
-      idToken: googleAuth.idToken,
-    ));
   }
 }
 
 class _FakeSignInManager with ChangeNotifier implements SignInManager {
+  bool _signedIn;
+
   @override
   final String userId;
 
@@ -171,9 +137,6 @@ class _FakeSignInManager with ChangeNotifier implements SignInManager {
 
   @override
   GoogleSignInAccount? _googleSignInAccount;
-
-  @override
-  bool _signedIn;
 
   @override
   GoogleSignIn get _googleSignIn => throw UnimplementedError();
