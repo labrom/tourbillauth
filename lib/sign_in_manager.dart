@@ -6,13 +6,31 @@ import 'package:tourbillon/log.dart';
 
 /// A service provider for user sign-in.
 class SignInManager extends ChangeNotifier {
-  final GoogleSignIn _googleSignIn = GoogleSignIn();
+  final GoogleSignIn _googleSignIn;
   GoogleSignInAccount? _googleSignInAccount;
   User? _firebaseUser;
   var _signedIn = false;
 
-  SignInManager() {
+  SignInManager() : _googleSignIn = GoogleSignIn() {
     Firebase.initializeApp();
+    _googleSignIn.onCurrentUserChanged
+        .listen((GoogleSignInAccount? googleSignInAccount) {
+      if (googleSignInAccount != null) {
+        _onGoogleLogin(googleSignInAccount);
+      } else {
+        _reset();
+        notifyListeners();
+      }
+    });
+    FirebaseAuth.instance.authStateChanges().listen((User? user) {
+      if (user != null) {
+        _firebaseUser = user;
+        _signedIn = true;
+      } else {
+        _reset();
+      }
+      notifyListeners();
+    });
   }
 
   factory SignInManager.fakeUser({
@@ -27,33 +45,33 @@ class SignInManager extends ChangeNotifier {
   ///
   /// This ID is the one that should be used by clients.
   ///
-  /// Throws an exception is no user is signed in.
+  /// Throws an exception if no user is signed in.
   String get userId => _firebaseUser!.uid;
 
   /// The Firebase user ID.
   ///
-  /// Throws an exception is no user is signed in.
+  /// Throws an exception if no user is signed in.
   String get firebaseUserUid => _firebaseUser!.uid;
 
   /// The user's email address.
   ///
-  /// Throws an exception is no user is signed in.
+  /// Throws an exception if no user is signed in.
   String get userEmail => _googleSignInAccount!.email;
 
   /// A description of the signed-in user.
   ///
-  /// Throws an exception is no user is signed in.
+  /// Throws an exception if no user is signed in.
   String get userDescription =>
       '${_googleSignInAccount!.displayName} (${_googleSignInAccount!.email})';
 
   /// A short description of the signed-in user.
   ///
-  /// Throws an exception is no user is signed in.
+  /// Throws an exception if no user is signed in.
   String get shortUserDescription => _googleSignInAccount!.displayName ?? '';
 
   /// The signed-in user profile photo URL.
   ///
-  /// Throws an exception is no user is signed in.
+  /// Throws an exception if no user is signed in.
   String get photoUrl => _googleSignInAccount!.photoUrl ?? '';
 
   Future<Map<String, String>> get authHeaders async {
@@ -63,60 +81,46 @@ class SignInManager extends ChangeNotifier {
     return _googleSignInAccount!.authHeaders;
   }
 
-  signIn() async {
-    _googleSignIn.onCurrentUserChanged
-        .listen((GoogleSignInAccount? googleSignInAccount) {
-      if (googleSignInAccount != null) {
-        _onLogin(googleSignInAccount);
-      } else {
-        _signedIn = false;
-        notifyListeners();
-      }
-    });
-
-    if (_signedIn) {
+  signIn() {
+    if (_signedIn && _googleSignInAccount != null) {
       try {
         _googleSignIn.signInSilently().whenComplete(() => () {
               notifyListeners();
             });
       } catch (e) {
         log.e('Sign in error: $e');
-        _signedIn = false;
+        _reset();
         notifyListeners();
       }
     } else {
-      _onLogin(await _googleSignIn.signIn());
+      _googleSignIn.signIn();
     }
   }
 
-  void signOut() async {
-    await _googleSignIn.signOut().then((_) {
-      _googleSignInAccount = null;
-      _firebaseUser = null;
-      _signedIn = false;
-      notifyListeners();
-    });
+  void signOut() {
+    _googleSignIn.signOut();
   }
 
-  _onLogin(GoogleSignInAccount? account) async {
-    if (account == null) return;
-    _googleSignInAccount = account;
-    final googleSignInAuthentication =
-        await _googleSignInAccount!.authentication;
+  void _reset() {
+    _googleSignInAccount = null;
+    _firebaseUser = null;
+    _signedIn = false;
+  }
 
-    final credential = GoogleAuthProvider.credential(
-      accessToken: googleSignInAuthentication.accessToken,
-      idToken: googleSignInAuthentication.idToken,
-    );
+  void _onGoogleLogin(GoogleSignInAccount? account) async {
+    if (account == null) {
+      _reset();
+      return;
+    }
+    _googleSignInAccount = account;
+    final googleAuth = await _googleSignInAccount!.authentication;
 
     // Get Firebase user
-    final authResult =
-        await FirebaseAuth.instance.signInWithCredential(credential);
-    _firebaseUser = authResult.user;
-    assert(!_firebaseUser!.isAnonymous);
-
-    _signedIn = true;
-    notifyListeners();
+    await FirebaseAuth.instance
+        .signInWithCredential(GoogleAuthProvider.credential(
+      accessToken: googleAuth.accessToken,
+      idToken: googleAuth.idToken,
+    ));
   }
 }
 
@@ -175,7 +179,12 @@ class _FakeSignInManager with ChangeNotifier implements SignInManager {
   GoogleSignIn get _googleSignIn => throw UnimplementedError();
 
   @override
-  _onLogin(GoogleSignInAccount? account) {
+  void _onGoogleLogin(GoogleSignInAccount? account) {
+    throw UnimplementedError();
+  }
+
+  @override
+  void _reset() {
     throw UnimplementedError();
   }
 }
