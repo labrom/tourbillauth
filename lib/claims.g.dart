@@ -6,7 +6,7 @@ part of 'claims.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$setClaimsHash() => r'779336a4f6ebd5c77473e979c83e5e32d12d0e45';
+String _$setClaimsHash() => r'910e664c3b69bacbe6a392272a91d494c8d3a991';
 
 /// Copied from Dart SDK
 class _SystemHash {
@@ -155,5 +155,38 @@ class _SetClaimsProviderElement extends AutoDisposeFutureProviderElement<bool>
   @override
   String get resource => (origin as SetClaimsProvider).resource;
 }
+
+String _$resetClaimsHash() => r'1625ef2f60ad0a4c96a07d24e1677bfa43d5ed12';
+
+/// See also [resetClaims].
+@ProviderFor(resetClaims)
+final resetClaimsProvider = AutoDisposeFutureProvider<bool>.internal(
+  resetClaims,
+  name: r'resetClaimsProvider',
+  debugGetCreateSourceHash:
+      const bool.fromEnvironment('dart.vm.product') ? null : _$resetClaimsHash,
+  dependencies: null,
+  allTransitiveDependencies: null,
+);
+
+@Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
+typedef ResetClaimsRef = AutoDisposeFutureProviderRef<bool>;
+String _$autoSetClaimsHash() => r'5fb0e3baec193c0a4f1b9ea9f980526f5d3ee45f';
+
+/// See also [AutoSetClaims].
+@ProviderFor(AutoSetClaims)
+final autoSetClaimsProvider =
+    AutoDisposeNotifierProvider<AutoSetClaims, bool>.internal(
+  AutoSetClaims.new,
+  name: r'autoSetClaimsProvider',
+  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
+      ? null
+      : _$autoSetClaimsHash,
+  dependencies: null,
+  allTransitiveDependencies: null,
+);
+
+typedef _$AutoSetClaims = AutoDisposeNotifier<bool>;
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package
