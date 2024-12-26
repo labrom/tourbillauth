@@ -22,7 +22,7 @@ final firebaseAuthProvider = AutoDisposeProvider<FirebaseAuth>.internal(
 @Deprecated('Will be removed in 3.0. Use Ref instead')
 // ignore: unused_element
 typedef FirebaseAuthRef = AutoDisposeProviderRef<FirebaseAuth>;
-String _$authStateChangesHash() => r'2b158df96a6d40cabbdda83370c6cddc7ef1f1f5';
+String _$authStateChangesHash() => r'ed73bb63cae92e791c80e19c01a8eb421d09a663';
 
 /// See also [authStateChanges].
 @ProviderFor(authStateChanges)
@@ -39,7 +39,24 @@ final authStateChangesProvider = AutoDisposeStreamProvider<User?>.internal(
 @Deprecated('Will be removed in 3.0. Use Ref instead')
 // ignore: unused_element
 typedef AuthStateChangesRef = AutoDisposeStreamProviderRef<User?>;
-String _$userHash() => r'95177f2c8b07a167fe6733bc1a3425653bd7491e';
+String _$idTokenChangesHash() => r'a4c27f4409b61d3a4c05ef168634d042bbeb20e1';
+
+/// See also [idTokenChanges].
+@ProviderFor(idTokenChanges)
+final idTokenChangesProvider = AutoDisposeStreamProvider<User?>.internal(
+  idTokenChanges,
+  name: r'idTokenChangesProvider',
+  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
+      ? null
+      : _$idTokenChangesHash,
+  dependencies: null,
+  allTransitiveDependencies: null,
+);
+
+@Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
+typedef IdTokenChangesRef = AutoDisposeStreamProviderRef<User?>;
+String _$userHash() => r'd5a5fa8e9a2f0a8abf75ec979c1f15e7ad52780c';
 
 /// See also [user].
 @ProviderFor(user)
@@ -55,7 +72,7 @@ final userProvider = AutoDisposeProvider<User?>.internal(
 @Deprecated('Will be removed in 3.0. Use Ref instead')
 // ignore: unused_element
 typedef UserRef = AutoDisposeProviderRef<User?>;
-String _$userIdHash() => r'74ad07285a27f7bc95384b6f97107fb1f740cc8c';
+String _$userIdHash() => r'db1cd44c22255f47c715fb0f20d437e42db6f179';
 
 /// See also [userId].
 @ProviderFor(userId)
@@ -71,7 +88,7 @@ final userIdProvider = AutoDisposeProvider<String?>.internal(
 @Deprecated('Will be removed in 3.0. Use Ref instead')
 // ignore: unused_element
 typedef UserIdRef = AutoDisposeProviderRef<String?>;
-String _$appUserHash() => r'f2faca046e366e87f64db323c8b1b652a849921f';
+String _$appUserHash() => r'8703e9cb1eea5b2f1c8ff04200f4c58f0c68bcc8';
 
 /// See also [appUser].
 @ProviderFor(appUser)

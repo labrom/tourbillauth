@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:tourbillon/firestore.dart';
 
@@ -12,17 +13,20 @@ part 'auth.g.dart';
 FirebaseAuth firebaseAuth(_) => FirebaseAuth.instance;
 
 @riverpod
-Stream<User?> authStateChanges(AuthStateChangesRef ref) =>
+Stream<User?> authStateChanges(Ref ref) =>
     ref.watch(firebaseAuthProvider).authStateChanges();
 
 @riverpod
-User? user(UserRef ref) => ref.watch(firebaseAuthProvider).currentUser;
+Stream<User?> idTokenChanges(Ref ref) => ref.watch(firebaseAuthProvider).idTokenChanges();
 
 @riverpod
-String? userId(UserIdRef ref) => ref.watch(userProvider)?.uid;
+User? user(Ref ref) => ref.watch(firebaseAuthProvider).currentUser;
 
 @riverpod
-Future<AppUser?> appUser(AppUserRef ref) async {
+String? userId(Ref ref) => ref.watch(userProvider)?.uid;
+
+@riverpod
+Future<AppUser?> appUser(Ref ref) async {
   return ref.watch(authStateChangesProvider).when(
       data: (user) async {
         if (user != null) {
