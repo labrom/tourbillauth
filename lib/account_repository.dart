@@ -16,17 +16,17 @@ import 'sign_in_manager.dart';
 /// in the [AccountRepository] constructor.
 bool isAdmin(BuildContext context) => context.read<AccountRepository>().isAdmin;
 
-/// A directory service provider for account management.
+/// A repository for the current user's account.
 ///
-/// This directory loads current user's role and settings stored in Firestore.
+/// This repository loads current user's role and settings stored in Firestore.
 /// It also tells if the current user is an admin. A user is an admin if one
 /// of their roles is the admin role. By default, the admin role is `admin`.
 ///
-/// This directory also handles registering the current Firebase user if they
+/// This repository also handles registering the current Firebase user if they
 /// don't have a user entry in the application yet, and there is an invitation
 /// with a matching email address.
 ///
-/// This directory expects the following Firestore structure:
+/// This repository expects the following Firestore structure:
 /// * a users collection keyed on the user's Firebase UID, default collection
 /// name: `users`
 /// * an invitations collection in which documents contain an `email` field,
@@ -123,7 +123,7 @@ class AccountRepository extends SignInAwareRepository {
     if (!checkSignIn()) return;
     if (_rolesLoaded) {
       log.i('User $userId already exists');
-      // Delete invite doc (although this could be done by a Firebase function)
+      // Delete invite doc (although this could be done in a Firebase function)
       firestoreProvider(_context)
           .instance
           .collection(inviteCollectionName)
