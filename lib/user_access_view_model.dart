@@ -10,7 +10,7 @@ import 'user_selector_model.dart';
 
 /// A view model that allows to manage the app's users.
 ///
-/// This implementation stores users and invitations in Firestore collection,
+/// This implementation stores users and invitations in Firestore collections,
 /// and resource user roles in a set of fields in the resource document.
 /// This resource document might be the actual resource document, or another
 /// document that is associated with this resource - with the same id - and only
