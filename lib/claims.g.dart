@@ -6,7 +6,7 @@ part of 'claims.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$setClaimsHash() => r'910e664c3b69bacbe6a392272a91d494c8d3a991';
+String _$setClaimsHash() => r'e400a82f24a531e60b7bf1cf7f17c440dd19c9e8';
 
 /// Copied from Dart SDK
 class _SystemHash {

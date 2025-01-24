@@ -16,7 +16,7 @@ class AuthGate extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) =>
       StreamBuilder<User?>(
-      stream: ref.watch(authStateChangesProvider) as Stream<User?>,
+      stream: ref.watch(authStateChangesStreamProvider),
       builder: (context, snapshot) => snapshot.hasData
           ? child
           : SignInScreen(

@@ -39,6 +39,25 @@ final authStateChangesProvider = AutoDisposeStreamProvider<User?>.internal(
 @Deprecated('Will be removed in 3.0. Use Ref instead')
 // ignore: unused_element
 typedef AuthStateChangesRef = AutoDisposeStreamProviderRef<User?>;
+String _$authStateChangesStreamHash() =>
+    r'c0c467ed5d1134c3fc143ab915ea641e8ae30e17';
+
+/// See also [authStateChangesStream].
+@ProviderFor(authStateChangesStream)
+final authStateChangesStreamProvider =
+    AutoDisposeProvider<Raw<Stream<User?>>>.internal(
+  authStateChangesStream,
+  name: r'authStateChangesStreamProvider',
+  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
+      ? null
+      : _$authStateChangesStreamHash,
+  dependencies: null,
+  allTransitiveDependencies: null,
+);
+
+@Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
+typedef AuthStateChangesStreamRef = AutoDisposeProviderRef<Raw<Stream<User?>>>;
 String _$idTokenChangesHash() => r'a4c27f4409b61d3a4c05ef168634d042bbeb20e1';
 
 /// See also [idTokenChanges].

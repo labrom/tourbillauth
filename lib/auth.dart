@@ -17,6 +17,10 @@ Stream<User?> authStateChanges(Ref ref) =>
     ref.watch(firebaseAuthProvider).authStateChanges();
 
 @riverpod
+Raw<Stream<User?>> authStateChangesStream(Ref ref) =>
+    ref.watch(firebaseAuthProvider).authStateChanges();
+
+@riverpod
 Stream<User?> idTokenChanges(Ref ref) => ref.watch(firebaseAuthProvider).idTokenChanges();
 
 @riverpod
