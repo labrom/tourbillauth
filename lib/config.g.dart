@@ -6,6 +6,24 @@ part of 'config.dart';
 // RiverpodGenerator
 // **************************************************************************
 
+String _$userFirestoreDatabaseHash() =>
+    r'28c88d2ecc78f0e94abe64d4b0dcd59fdd032708';
+
+/// See also [userFirestoreDatabase].
+@ProviderFor(userFirestoreDatabase)
+final userFirestoreDatabaseProvider = AutoDisposeProvider<String?>.internal(
+  userFirestoreDatabase,
+  name: r'userFirestoreDatabaseProvider',
+  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
+      ? null
+      : _$userFirestoreDatabaseHash,
+  dependencies: null,
+  allTransitiveDependencies: null,
+);
+
+@Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
+typedef UserFirestoreDatabaseRef = AutoDisposeProviderRef<String?>;
 String _$userCollectionNameHash() =>
     r'038f083308f3d51b1b90a982e1d22d9f72b501b4';
 

@@ -5,6 +5,9 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 part 'config.g.dart';
 
 @riverpod
+String? userFirestoreDatabase(_) => null;
+
+@riverpod
 String userCollectionName(_) => 'users';
 
 @riverpod

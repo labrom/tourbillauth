@@ -10,9 +10,6 @@ import 'model.dart';
 part 'auth.g.dart';
 
 @riverpod
-String? userFirestoreDatabase(_) => null;
-
-@riverpod
 FirebaseFirestore userFirestore(Ref ref) => ref.read(firebaseFirestoreProvider(
     database: ref.read(userFirestoreDatabaseProvider)));
 
