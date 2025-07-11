@@ -5,10 +5,10 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 part 'config.g.dart';
 
 @riverpod
-String? userFirestoreDatabase(_) => null;
+String? usersFirestoreDatabaseName(_) => null;
 
 @riverpod
-String userCollectionName(_) => 'users';
+String usersCollectionName(_) => 'users';
 
 @riverpod
 String rolesFieldName(_) => 'roles';

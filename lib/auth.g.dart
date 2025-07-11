@@ -6,7 +6,7 @@ part of 'auth.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$userFirestoreHash() => r'8a4b1a53a7902519d63993f520b50ea039a0c44e';
+String _$userFirestoreHash() => r'e817a9db592a0cd7a22bc02b4df30155e5665fde';
 
 /// See also [userFirestore].
 @ProviderFor(userFirestore)
@@ -24,7 +24,7 @@ final userFirestoreProvider = AutoDisposeProvider<FirebaseFirestore>.internal(
 // ignore: unused_element
 typedef UserFirestoreRef = AutoDisposeProviderRef<FirebaseFirestore>;
 String _$userFirestoreDocumentReferenceHash() =>
-    r'd861a3a2a37a8dc8ee0beed2ffbb0d43e15b48e3';
+    r'6bca4322708f527c2abd13fb07a25f98cd6d867f';
 
 /// See also [userFirestoreDocumentReference].
 @ProviderFor(userFirestoreDocumentReference)

@@ -6,42 +6,43 @@ part of 'config.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$userFirestoreDatabaseHash() =>
-    r'28c88d2ecc78f0e94abe64d4b0dcd59fdd032708';
+String _$usersFirestoreDatabaseNameHash() =>
+    r'8a2ed00b632cb4161f1794c88777d4c5764afcf8';
 
-/// See also [userFirestoreDatabase].
-@ProviderFor(userFirestoreDatabase)
-final userFirestoreDatabaseProvider = AutoDisposeProvider<String?>.internal(
-  userFirestoreDatabase,
-  name: r'userFirestoreDatabaseProvider',
+/// See also [usersFirestoreDatabaseName].
+@ProviderFor(usersFirestoreDatabaseName)
+final usersFirestoreDatabaseNameProvider =
+    AutoDisposeProvider<String?>.internal(
+  usersFirestoreDatabaseName,
+  name: r'usersFirestoreDatabaseNameProvider',
   debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
       ? null
-      : _$userFirestoreDatabaseHash,
+      : _$usersFirestoreDatabaseNameHash,
   dependencies: null,
   allTransitiveDependencies: null,
 );
 
 @Deprecated('Will be removed in 3.0. Use Ref instead')
 // ignore: unused_element
-typedef UserFirestoreDatabaseRef = AutoDisposeProviderRef<String?>;
-String _$userCollectionNameHash() =>
-    r'038f083308f3d51b1b90a982e1d22d9f72b501b4';
+typedef UsersFirestoreDatabaseNameRef = AutoDisposeProviderRef<String?>;
+String _$usersCollectionNameHash() =>
+    r'3516ca416b02764e8ecacdb85d8ff4a35dd15451';
 
-/// See also [userCollectionName].
-@ProviderFor(userCollectionName)
-final userCollectionNameProvider = AutoDisposeProvider<String>.internal(
-  userCollectionName,
-  name: r'userCollectionNameProvider',
+/// See also [usersCollectionName].
+@ProviderFor(usersCollectionName)
+final usersCollectionNameProvider = AutoDisposeProvider<String>.internal(
+  usersCollectionName,
+  name: r'usersCollectionNameProvider',
   debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
       ? null
-      : _$userCollectionNameHash,
+      : _$usersCollectionNameHash,
   dependencies: null,
   allTransitiveDependencies: null,
 );
 
 @Deprecated('Will be removed in 3.0. Use Ref instead')
 // ignore: unused_element
-typedef UserCollectionNameRef = AutoDisposeProviderRef<String>;
+typedef UsersCollectionNameRef = AutoDisposeProviderRef<String>;
 String _$rolesFieldNameHash() => r'7164805918d76325193406294b91a051403fab15';
 
 /// See also [rolesFieldName].

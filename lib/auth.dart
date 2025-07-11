@@ -11,12 +11,12 @@ part 'auth.g.dart';
 
 @riverpod
 FirebaseFirestore userFirestore(Ref ref) => ref.read(firebaseFirestoreProvider(
-    database: ref.read(userFirestoreDatabaseProvider)));
+    database: ref.read(usersFirestoreDatabaseNameProvider)));
 
 @riverpod
 DocumentReference userFirestoreDocumentReference(Ref ref) =>
     ref.read(userFirestoreProvider).doc(
-        '${ref.read(userCollectionNameProvider)}/${ref.watch(userIdProvider)}');
+        '${ref.read(usersCollectionNameProvider)}/${ref.watch(userIdProvider)}');
 
 @riverpod
 FirebaseAuth firebaseAuth(_) => FirebaseAuth.instance;
