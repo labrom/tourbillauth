@@ -943,7 +943,7 @@ packages:
     description:
       path: "."
       ref: HEAD
-      resolved-ref: "372c9aca4d0ba91d6488278f6e17c966330eaf1c"
+      resolved-ref: "7699aff6fc3911d01ee9be76604e0f5e0b67934a"
       url: "https://github.com/labrom/tourbillon.git"
     source: git
     version: "1.0.0+1"

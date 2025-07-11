@@ -6,6 +6,61 @@ part of 'auth.dart';
 // RiverpodGenerator
 // **************************************************************************
 
+String _$userFirestoreDatabaseHash() =>
+    r'28c88d2ecc78f0e94abe64d4b0dcd59fdd032708';
+
+/// See also [userFirestoreDatabase].
+@ProviderFor(userFirestoreDatabase)
+final userFirestoreDatabaseProvider = AutoDisposeProvider<String?>.internal(
+  userFirestoreDatabase,
+  name: r'userFirestoreDatabaseProvider',
+  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
+      ? null
+      : _$userFirestoreDatabaseHash,
+  dependencies: null,
+  allTransitiveDependencies: null,
+);
+
+@Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
+typedef UserFirestoreDatabaseRef = AutoDisposeProviderRef<String?>;
+String _$userFirestoreHash() => r'8a4b1a53a7902519d63993f520b50ea039a0c44e';
+
+/// See also [userFirestore].
+@ProviderFor(userFirestore)
+final userFirestoreProvider = AutoDisposeProvider<FirebaseFirestore>.internal(
+  userFirestore,
+  name: r'userFirestoreProvider',
+  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
+      ? null
+      : _$userFirestoreHash,
+  dependencies: null,
+  allTransitiveDependencies: null,
+);
+
+@Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
+typedef UserFirestoreRef = AutoDisposeProviderRef<FirebaseFirestore>;
+String _$userFirestoreDocumentReferenceHash() =>
+    r'd861a3a2a37a8dc8ee0beed2ffbb0d43e15b48e3';
+
+/// See also [userFirestoreDocumentReference].
+@ProviderFor(userFirestoreDocumentReference)
+final userFirestoreDocumentReferenceProvider =
+    AutoDisposeProvider<DocumentReference>.internal(
+  userFirestoreDocumentReference,
+  name: r'userFirestoreDocumentReferenceProvider',
+  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
+      ? null
+      : _$userFirestoreDocumentReferenceHash,
+  dependencies: null,
+  allTransitiveDependencies: null,
+);
+
+@Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
+typedef UserFirestoreDocumentReferenceRef
+    = AutoDisposeProviderRef<DocumentReference>;
 String _$firebaseAuthHash() => r'8f9dd590959e35932285fca37913676bd13a02fd';
 
 /// See also [firebaseAuth].
@@ -107,7 +162,7 @@ final userIdProvider = AutoDisposeProvider<String?>.internal(
 @Deprecated('Will be removed in 3.0. Use Ref instead')
 // ignore: unused_element
 typedef UserIdRef = AutoDisposeProviderRef<String?>;
-String _$appUserHash() => r'8703e9cb1eea5b2f1c8ff04200f4c58f0c68bcc8';
+String _$appUserHash() => r'e2d1357f285ee80f07d95f3a424183611fd69a17';
 
 /// See also [appUser].
 @ProviderFor(appUser)
