@@ -1,22 +1,11 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
-import 'package:tourbillon/firestore.dart';
+import 'package:tourbillauth/firestore.dart';
 
-import 'config.dart';
 import 'model.dart';
 
 part 'auth.g.dart';
-
-@riverpod
-FirebaseFirestore userFirestore(Ref ref) => ref.read(firebaseFirestoreProvider(
-    database: ref.read(usersFirestoreDatabaseNameProvider)));
-
-@riverpod
-DocumentReference userFirestoreDocumentReference(Ref ref) =>
-    ref.read(userFirestoreProvider).doc(
-        '${ref.read(usersCollectionNameProvider)}/${ref.watch(userIdProvider)}');
 
 @riverpod
 FirebaseAuth firebaseAuth(_) => FirebaseAuth.instance;
@@ -44,7 +33,7 @@ Future<AppUser?> appUser(Ref ref) async {
   return ref.watch(authStateChangesProvider).when(
       data: (user) async {
         if (user != null) {
-          final doc = ref.watch(userFirestoreDocumentReferenceProvider);
+          final doc = userFirestoreDocumentReference(ref);
           final snapshot = await doc.get();
           if (!snapshot.exists) {
             final user = ref.watch(userProvider);

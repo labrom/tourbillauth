@@ -9,6 +9,92 @@ part of 'firestore.dart';
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // ignore_for_file: type=lint, type=warning
 
+@ProviderFor(userFirestore)
+const userFirestoreProvider = UserFirestoreProvider._();
+
+final class UserFirestoreProvider extends $FunctionalProvider<FirebaseFirestore,
+    FirebaseFirestore, FirebaseFirestore> with $Provider<FirebaseFirestore> {
+  const UserFirestoreProvider._()
+      : super(
+          from: null,
+          argument: null,
+          retry: null,
+          name: r'userFirestoreProvider',
+          isAutoDispose: true,
+          dependencies: null,
+          $allTransitiveDependencies: null,
+        );
+
+  @override
+  String debugGetCreateSourceHash() => _$userFirestoreHash();
+
+  @$internal
+  @override
+  $ProviderElement<FirebaseFirestore> $createElement(
+          $ProviderPointer pointer) =>
+      $ProviderElement(pointer);
+
+  @override
+  FirebaseFirestore create(Ref ref) {
+    return userFirestore(ref);
+  }
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(FirebaseFirestore value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $SyncValueProvider<FirebaseFirestore>(value),
+    );
+  }
+}
+
+String _$userFirestoreHash() => r'94feda46dce99d1030f85e65c6e18eb4bc1fbb9c';
+
+@ProviderFor(userFirestoreDocumentReference)
+const userFirestoreDocumentReferenceProvider =
+    UserFirestoreDocumentReferenceProvider._();
+
+final class UserFirestoreDocumentReferenceProvider extends $FunctionalProvider<
+    DocumentReference<Object?>,
+    DocumentReference<Object?>,
+    DocumentReference<Object?>> with $Provider<DocumentReference<Object?>> {
+  const UserFirestoreDocumentReferenceProvider._()
+      : super(
+          from: null,
+          argument: null,
+          retry: null,
+          name: r'userFirestoreDocumentReferenceProvider',
+          isAutoDispose: true,
+          dependencies: null,
+          $allTransitiveDependencies: null,
+        );
+
+  @override
+  String debugGetCreateSourceHash() => _$userFirestoreDocumentReferenceHash();
+
+  @$internal
+  @override
+  $ProviderElement<DocumentReference<Object?>> $createElement(
+          $ProviderPointer pointer) =>
+      $ProviderElement(pointer);
+
+  @override
+  DocumentReference<Object?> create(Ref ref) {
+    return userFirestoreDocumentReference(ref);
+  }
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(DocumentReference<Object?> value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $SyncValueProvider<DocumentReference<Object?>>(value),
+    );
+  }
+}
+
+String _$userFirestoreDocumentReferenceHash() =>
+    r'2a0ae86dee2933a6fe396549423b200403153a9f';
+
 @ProviderFor(userSpacePath)
 const userSpacePathProvider = UserSpacePathFamily._();
 
@@ -67,7 +153,7 @@ final class UserSpacePathProvider
   }
 }
 
-String _$userSpacePathHash() => r'4a9a718ba91265770eb721020d6ac7f7e003b129';
+String _$userSpacePathHash() => r'36df06e7a4afe9dc72d52740e47564a5c91130f8';
 
 final class UserSpacePathFamily extends $Family
     with $FunctionalFamilyOverride<String, String> {
@@ -156,7 +242,7 @@ final class UserSpaceCollectionReferenceProvider extends $FunctionalProvider<
 }
 
 String _$userSpaceCollectionReferenceHash() =>
-    r'727d97771e1044ce28d963b70bfea0b39fcf6b46';
+    r'388f222cac89cdbfb7ebfac55cedfa9643f1288b';
 
 final class UserSpaceCollectionReferenceFamily extends $Family
     with
@@ -246,7 +332,7 @@ final class UserSpaceDocumentReferenceProvider extends $FunctionalProvider<
 }
 
 String _$userSpaceDocumentReferenceHash() =>
-    r'eee80bd3e554bfaa6353533cedbc4153f95d6651';
+    r'b71feb6aff1f28aff5c67d7c8983004326e7cb33';
 
 final class UserSpaceDocumentReferenceFamily extends $Family
     with
@@ -327,7 +413,7 @@ final class UserSpaceDocumentProvider extends $FunctionalProvider<
   }
 }
 
-String _$userSpaceDocumentHash() => r'00d7824d60931cd77cb764549dd902b960051715';
+String _$userSpaceDocumentHash() => r'bc33198b5592083d102419bb9eb525c065ac2227';
 
 final class UserSpaceDocumentFamily extends $Family
     with
@@ -351,55 +437,161 @@ final class UserSpaceDocumentFamily extends $Family
   String toString() => r'userSpaceDocumentProvider';
 }
 
-@ProviderFor(userSpaceDocumentStream)
-const userSpaceDocumentStreamProvider = UserSpaceDocumentStreamFamily._();
+@ProviderFor(userSpaceQueryStream)
+const userSpaceQueryStreamProvider = UserSpaceQueryStreamFamily._();
 
-final class UserSpaceDocumentStreamProvider extends $FunctionalProvider<
-        AsyncValue<QuerySnapshot<Object?>>,
-        QuerySnapshot<Object?>,
-        Stream<QuerySnapshot<Object?>>>
+final class UserSpaceQueryStreamProvider extends $FunctionalProvider<
+        AsyncValue<QuerySnapshot<Map<String, dynamic>>>,
+        QuerySnapshot<Map<String, dynamic>>,
+        Stream<QuerySnapshot<Map<String, dynamic>>>>
     with
-        $FutureModifier<QuerySnapshot<Object?>>,
-        $StreamProvider<QuerySnapshot<Object?>> {
-  const UserSpaceDocumentStreamProvider._(
-      {required UserSpaceDocumentStreamFamily super.from,
-      required String super.argument})
+        $FutureModifier<QuerySnapshot<Map<String, dynamic>>>,
+        $StreamProvider<QuerySnapshot<Map<String, dynamic>>> {
+  const UserSpaceQueryStreamProvider._(
+      {required UserSpaceQueryStreamFamily super.from,
+      required (
+        String, {
+        List<OrderBy> orderBy,
+      })
+          super.argument})
       : super(
           retry: null,
-          name: r'userSpaceDocumentStreamProvider',
+          name: r'userSpaceQueryStreamProvider',
           isAutoDispose: true,
           dependencies: null,
           $allTransitiveDependencies: null,
         );
 
   @override
-  String debugGetCreateSourceHash() => _$userSpaceDocumentStreamHash();
+  String debugGetCreateSourceHash() => _$userSpaceQueryStreamHash();
 
   @override
   String toString() {
-    return r'userSpaceDocumentStreamProvider'
+    return r'userSpaceQueryStreamProvider'
         ''
-        '($argument)';
+        '$argument';
   }
 
   @$internal
   @override
-  $StreamProviderElement<QuerySnapshot<Object?>> $createElement(
+  $StreamProviderElement<QuerySnapshot<Map<String, dynamic>>> $createElement(
           $ProviderPointer pointer) =>
       $StreamProviderElement(pointer);
 
   @override
-  Stream<QuerySnapshot<Object?>> create(Ref ref) {
-    final argument = this.argument as String;
-    return userSpaceDocumentStream(
+  Stream<QuerySnapshot<Map<String, dynamic>>> create(Ref ref) {
+    final argument = this.argument as (
+      String, {
+      List<OrderBy> orderBy,
+    });
+    return userSpaceQueryStream(
       ref,
-      argument,
+      argument.$1,
+      orderBy: argument.orderBy,
     );
   }
 
   @override
   bool operator ==(Object other) {
-    return other is UserSpaceDocumentStreamProvider &&
+    return other is UserSpaceQueryStreamProvider && other.argument == argument;
+  }
+
+  @override
+  int get hashCode {
+    return argument.hashCode;
+  }
+}
+
+String _$userSpaceQueryStreamHash() =>
+    r'ac7ac35767c4575265edd70547fad76fc3e39cc7';
+
+final class UserSpaceQueryStreamFamily extends $Family
+    with
+        $FunctionalFamilyOverride<
+            Stream<QuerySnapshot<Map<String, dynamic>>>,
+            (
+              String, {
+              List<OrderBy> orderBy,
+            })> {
+  const UserSpaceQueryStreamFamily._()
+      : super(
+          retry: null,
+          name: r'userSpaceQueryStreamProvider',
+          dependencies: null,
+          $allTransitiveDependencies: null,
+          isAutoDispose: true,
+        );
+
+  UserSpaceQueryStreamProvider call(
+    String collectionPath, {
+    List<OrderBy> orderBy = const [],
+  }) =>
+      UserSpaceQueryStreamProvider._(argument: (
+        collectionPath,
+        orderBy: orderBy,
+      ), from: this);
+
+  @override
+  String toString() => r'userSpaceQueryStreamProvider';
+}
+
+@ProviderFor(userSpaceQueryDocumentList)
+const userSpaceQueryDocumentListProvider = UserSpaceQueryDocumentListFamily._();
+
+final class UserSpaceQueryDocumentListProvider extends $FunctionalProvider<
+        AsyncValue<List<QueryDocumentSnapshot<Map<String, dynamic>>>>,
+        List<QueryDocumentSnapshot<Map<String, dynamic>>>,
+        FutureOr<List<QueryDocumentSnapshot<Map<String, dynamic>>>>>
+    with
+        $FutureModifier<List<QueryDocumentSnapshot<Map<String, dynamic>>>>,
+        $FutureProvider<List<QueryDocumentSnapshot<Map<String, dynamic>>>> {
+  const UserSpaceQueryDocumentListProvider._(
+      {required UserSpaceQueryDocumentListFamily super.from,
+      required (
+        String, {
+        List<OrderBy> orderBy,
+      })
+          super.argument})
+      : super(
+          retry: null,
+          name: r'userSpaceQueryDocumentListProvider',
+          isAutoDispose: true,
+          dependencies: null,
+          $allTransitiveDependencies: null,
+        );
+
+  @override
+  String debugGetCreateSourceHash() => _$userSpaceQueryDocumentListHash();
+
+  @override
+  String toString() {
+    return r'userSpaceQueryDocumentListProvider'
+        ''
+        '$argument';
+  }
+
+  @$internal
+  @override
+  $FutureProviderElement<List<QueryDocumentSnapshot<Map<String, dynamic>>>>
+      $createElement($ProviderPointer pointer) =>
+          $FutureProviderElement(pointer);
+
+  @override
+  FutureOr<List<QueryDocumentSnapshot<Map<String, dynamic>>>> create(Ref ref) {
+    final argument = this.argument as (
+      String, {
+      List<OrderBy> orderBy,
+    });
+    return userSpaceQueryDocumentList(
+      ref,
+      argument.$1,
+      orderBy: argument.orderBy,
+    );
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return other is UserSpaceQueryDocumentListProvider &&
         other.argument == argument;
   }
 
@@ -409,25 +601,35 @@ final class UserSpaceDocumentStreamProvider extends $FunctionalProvider<
   }
 }
 
-String _$userSpaceDocumentStreamHash() =>
-    r'417c7862af925aa4d9b6e814b5d30e15981b520e';
+String _$userSpaceQueryDocumentListHash() =>
+    r'0e46c4555ac7cccddb61ae5980bde246d77a801f';
 
-final class UserSpaceDocumentStreamFamily extends $Family
-    with $FunctionalFamilyOverride<Stream<QuerySnapshot<Object?>>, String> {
-  const UserSpaceDocumentStreamFamily._()
+final class UserSpaceQueryDocumentListFamily extends $Family
+    with
+        $FunctionalFamilyOverride<
+            FutureOr<List<QueryDocumentSnapshot<Map<String, dynamic>>>>,
+            (
+              String, {
+              List<OrderBy> orderBy,
+            })> {
+  const UserSpaceQueryDocumentListFamily._()
       : super(
           retry: null,
-          name: r'userSpaceDocumentStreamProvider',
+          name: r'userSpaceQueryDocumentListProvider',
           dependencies: null,
           $allTransitiveDependencies: null,
           isAutoDispose: true,
         );
 
-  UserSpaceDocumentStreamProvider call(
-    String collectionPath,
-  ) =>
-      UserSpaceDocumentStreamProvider._(argument: collectionPath, from: this);
+  UserSpaceQueryDocumentListProvider call(
+    String collectionPath, {
+    List<OrderBy> orderBy = const [],
+  }) =>
+      UserSpaceQueryDocumentListProvider._(argument: (
+        collectionPath,
+        orderBy: orderBy,
+      ), from: this);
 
   @override
-  String toString() => r'userSpaceDocumentStreamProvider';
+  String toString() => r'userSpaceQueryDocumentListProvider';
 }

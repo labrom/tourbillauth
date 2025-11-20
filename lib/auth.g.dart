@@ -9,92 +9,6 @@ part of 'auth.dart';
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // ignore_for_file: type=lint, type=warning
 
-@ProviderFor(userFirestore)
-const userFirestoreProvider = UserFirestoreProvider._();
-
-final class UserFirestoreProvider extends $FunctionalProvider<FirebaseFirestore,
-    FirebaseFirestore, FirebaseFirestore> with $Provider<FirebaseFirestore> {
-  const UserFirestoreProvider._()
-      : super(
-          from: null,
-          argument: null,
-          retry: null,
-          name: r'userFirestoreProvider',
-          isAutoDispose: true,
-          dependencies: null,
-          $allTransitiveDependencies: null,
-        );
-
-  @override
-  String debugGetCreateSourceHash() => _$userFirestoreHash();
-
-  @$internal
-  @override
-  $ProviderElement<FirebaseFirestore> $createElement(
-          $ProviderPointer pointer) =>
-      $ProviderElement(pointer);
-
-  @override
-  FirebaseFirestore create(Ref ref) {
-    return userFirestore(ref);
-  }
-
-  /// {@macro riverpod.override_with_value}
-  Override overrideWithValue(FirebaseFirestore value) {
-    return $ProviderOverride(
-      origin: this,
-      providerOverride: $SyncValueProvider<FirebaseFirestore>(value),
-    );
-  }
-}
-
-String _$userFirestoreHash() => r'e817a9db592a0cd7a22bc02b4df30155e5665fde';
-
-@ProviderFor(userFirestoreDocumentReference)
-const userFirestoreDocumentReferenceProvider =
-    UserFirestoreDocumentReferenceProvider._();
-
-final class UserFirestoreDocumentReferenceProvider extends $FunctionalProvider<
-    DocumentReference<Object?>,
-    DocumentReference<Object?>,
-    DocumentReference<Object?>> with $Provider<DocumentReference<Object?>> {
-  const UserFirestoreDocumentReferenceProvider._()
-      : super(
-          from: null,
-          argument: null,
-          retry: null,
-          name: r'userFirestoreDocumentReferenceProvider',
-          isAutoDispose: true,
-          dependencies: null,
-          $allTransitiveDependencies: null,
-        );
-
-  @override
-  String debugGetCreateSourceHash() => _$userFirestoreDocumentReferenceHash();
-
-  @$internal
-  @override
-  $ProviderElement<DocumentReference<Object?>> $createElement(
-          $ProviderPointer pointer) =>
-      $ProviderElement(pointer);
-
-  @override
-  DocumentReference<Object?> create(Ref ref) {
-    return userFirestoreDocumentReference(ref);
-  }
-
-  /// {@macro riverpod.override_with_value}
-  Override overrideWithValue(DocumentReference<Object?> value) {
-    return $ProviderOverride(
-      origin: this,
-      providerOverride: $SyncValueProvider<DocumentReference<Object?>>(value),
-    );
-  }
-}
-
-String _$userFirestoreDocumentReferenceHash() =>
-    r'6bca4322708f527c2abd13fb07a25f98cd6d867f';
-
 @ProviderFor(firebaseAuth)
 const firebaseAuthProvider = FirebaseAuthProvider._();
 
@@ -358,4 +272,4 @@ final class AppUserProvider extends $FunctionalProvider<AsyncValue<AppUser?>,
   }
 }
 
-String _$appUserHash() => r'e2d1357f285ee80f07d95f3a424183611fd69a17';
+String _$appUserHash() => r'bcc6a8181452e649b371074fe91fd6289a349170';

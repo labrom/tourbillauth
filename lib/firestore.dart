@@ -1,31 +1,50 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:tourbillauth/auth.dart';
 import 'package:tourbillauth/config.dart';
+import 'package:tourbillon/firestore.dart';
 
 part 'firestore.g.dart';
 
 @riverpod
+FirebaseFirestore userFirestore(Ref ref) => ref
+    .read(firebaseFirestoreProvider(database: usersFirestoreDatabaseName(ref)));
+
+@riverpod
+DocumentReference userFirestoreDocumentReference(Ref ref) => userFirestore(ref)
+    .doc('${usersCollectionName(ref)}/${ref.watch(userIdProvider)}');
+
+@riverpod
 String userSpacePath(Ref ref, String path) =>
-    '${ref.read(usersCollectionNameProvider)}/${userId(ref)}/$path';
+    '${usersCollectionName(ref)}/${userId(ref)}/$path';
 
 @riverpod
-CollectionReference<Map<String, dynamic>> userSpaceCollectionReference(Ref ref, String path) {
-  return ref.read(userFirestoreProvider).collection(ref.watch(userSpacePathProvider(path)));
+CollectionReference<Map<String, dynamic>> userSpaceCollectionReference(
+    Ref ref, String path) {
+  return userFirestore(ref).collection(userSpacePath(ref, path));
 }
 
 @riverpod
-DocumentReference<Map<String, dynamic>> userSpaceDocumentReference(Ref ref, String path) {
-  return ref.read(userFirestoreProvider).doc(ref.watch(userSpacePathProvider(path)));
+DocumentReference<Map<String, dynamic>> userSpaceDocumentReference(
+    Ref ref, String path) {
+  return userFirestore(ref).doc(userSpacePath(ref, path));
 }
 
 @riverpod
-Stream<DocumentSnapshot<Map<String, dynamic>>> userSpaceDocument(Ref ref, String path) {
-  return ref.watch(userSpaceDocumentReferenceProvider(path)).snapshots();
+Stream<DocumentSnapshot<Map<String, dynamic>>> userSpaceDocument(
+    Ref ref, String path) {
+  return userSpaceDocumentReference(ref, path).snapshots();
 }
 
 @riverpod
-Stream<QuerySnapshot> userSpaceDocumentStream(Ref ref, String collectionPath) {
-  return ref.watch(userSpaceCollectionReferenceProvider(collectionPath)).snapshots();
-}
+Stream<QuerySnapshot<Map<String, dynamic>>> userSpaceQueryStream(
+        Ref ref, String collectionPath, {List<OrderBy> orderBy = const []}) =>
+    firestoreQueryStream(ref, userSpacePath(ref, collectionPath),
+        database: usersFirestoreDatabaseName(ref), orderBy: orderBy);
+
+@riverpod
+Future<List<QueryDocumentSnapshot<Map<String, dynamic>>>>
+    userSpaceQueryDocumentList(Ref ref, String collectionPath,
+            {List<OrderBy> orderBy = const []}) async =>
+        firestoreQueryDocumentList(ref, userSpacePath(ref, collectionPath),
+            database: usersFirestoreDatabaseName(ref), orderBy: orderBy);
