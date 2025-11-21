@@ -40,11 +40,11 @@ Stream<DocumentSnapshot<Map<String, dynamic>>> userSpaceDocument(
 Stream<QuerySnapshot<Map<String, dynamic>>> userSpaceQueryStream(
         Ref ref, String collectionPath, {List<OrderBy> orderBy = const []}) =>
     firestoreQueryStream(ref, userSpacePath(ref, collectionPath),
-        database: usersFirestoreDatabaseName(ref), orderBy: orderBy);
+        database: ref.read(usersFirestoreDatabaseNameProvider), orderBy: orderBy);
 
 @riverpod
 Future<List<QueryDocumentSnapshot<Map<String, dynamic>>>>
     userSpaceQueryDocumentList(Ref ref, String collectionPath,
             {List<OrderBy> orderBy = const []}) async =>
         firestoreQueryDocumentList(ref, userSpacePath(ref, collectionPath),
-            database: usersFirestoreDatabaseName(ref), orderBy: orderBy);
+            database: ref.read(usersFirestoreDatabaseNameProvider), orderBy: orderBy);
