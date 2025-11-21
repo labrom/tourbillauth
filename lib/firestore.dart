@@ -8,7 +8,7 @@ part 'firestore.g.dart';
 
 @riverpod
 FirebaseFirestore userFirestore(Ref ref) => ref
-    .read(firebaseFirestoreProvider(database: usersFirestoreDatabaseName(ref)));
+    .read(firebaseFirestoreProvider(database: ref.read(usersFirestoreDatabaseNameProvider)));
 
 @riverpod
 DocumentReference userFirestoreDocumentReference(Ref ref) => userFirestore(ref)

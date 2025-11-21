@@ -48,7 +48,7 @@ final class UserFirestoreProvider extends $FunctionalProvider<FirebaseFirestore,
   }
 }
 
-String _$userFirestoreHash() => r'94feda46dce99d1030f85e65c6e18eb4bc1fbb9c';
+String _$userFirestoreHash() => r'e817a9db592a0cd7a22bc02b4df30155e5665fde';
 
 @ProviderFor(userFirestoreDocumentReference)
 const userFirestoreDocumentReferenceProvider =
