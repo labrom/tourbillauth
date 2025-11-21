@@ -451,7 +451,7 @@ final class UserSpaceQueryStreamProvider extends $FunctionalProvider<
       {required UserSpaceQueryStreamFamily super.from,
       required (
         String, {
-        List<OrderBy> orderBy,
+        OrderBy? orderBy,
       })
           super.argument})
       : super(
@@ -482,7 +482,7 @@ final class UserSpaceQueryStreamProvider extends $FunctionalProvider<
   Stream<QuerySnapshot<Map<String, dynamic>>> create(Ref ref) {
     final argument = this.argument as (
       String, {
-      List<OrderBy> orderBy,
+      OrderBy? orderBy,
     });
     return userSpaceQueryStream(
       ref,
@@ -503,7 +503,7 @@ final class UserSpaceQueryStreamProvider extends $FunctionalProvider<
 }
 
 String _$userSpaceQueryStreamHash() =>
-    r'ac7ac35767c4575265edd70547fad76fc3e39cc7';
+    r'ffe811f3a1e65426194df21729586d4b31cf59d2';
 
 final class UserSpaceQueryStreamFamily extends $Family
     with
@@ -511,7 +511,7 @@ final class UserSpaceQueryStreamFamily extends $Family
             Stream<QuerySnapshot<Map<String, dynamic>>>,
             (
               String, {
-              List<OrderBy> orderBy,
+              OrderBy? orderBy,
             })> {
   const UserSpaceQueryStreamFamily._()
       : super(
@@ -524,7 +524,7 @@ final class UserSpaceQueryStreamFamily extends $Family
 
   UserSpaceQueryStreamProvider call(
     String collectionPath, {
-    List<OrderBy> orderBy = const [],
+    OrderBy? orderBy,
   }) =>
       UserSpaceQueryStreamProvider._(argument: (
         collectionPath,
@@ -549,7 +549,7 @@ final class UserSpaceQueryDocumentListProvider extends $FunctionalProvider<
       {required UserSpaceQueryDocumentListFamily super.from,
       required (
         String, {
-        List<OrderBy> orderBy,
+        OrderBy? orderBy,
       })
           super.argument})
       : super(
@@ -580,7 +580,7 @@ final class UserSpaceQueryDocumentListProvider extends $FunctionalProvider<
   FutureOr<List<QueryDocumentSnapshot<Map<String, dynamic>>>> create(Ref ref) {
     final argument = this.argument as (
       String, {
-      List<OrderBy> orderBy,
+      OrderBy? orderBy,
     });
     return userSpaceQueryDocumentList(
       ref,
@@ -602,7 +602,7 @@ final class UserSpaceQueryDocumentListProvider extends $FunctionalProvider<
 }
 
 String _$userSpaceQueryDocumentListHash() =>
-    r'0e46c4555ac7cccddb61ae5980bde246d77a801f';
+    r'1328e6d966af53e0e5f9775c417d0a4f04d8bd30';
 
 final class UserSpaceQueryDocumentListFamily extends $Family
     with
@@ -610,7 +610,7 @@ final class UserSpaceQueryDocumentListFamily extends $Family
             FutureOr<List<QueryDocumentSnapshot<Map<String, dynamic>>>>,
             (
               String, {
-              List<OrderBy> orderBy,
+              OrderBy? orderBy,
             })> {
   const UserSpaceQueryDocumentListFamily._()
       : super(
@@ -623,7 +623,7 @@ final class UserSpaceQueryDocumentListFamily extends $Family
 
   UserSpaceQueryDocumentListProvider call(
     String collectionPath, {
-    List<OrderBy> orderBy = const [],
+    OrderBy? orderBy,
   }) =>
       UserSpaceQueryDocumentListProvider._(argument: (
         collectionPath,
