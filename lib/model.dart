@@ -16,7 +16,9 @@ class AppUser {
     for (var term in searchTerms) {
       if (email.contains(term) != true &&
           description?.contains(term) != true &&
-          uid != term) return false;
+          uid != term) {
+        return false;
+      }
     }
     return true;
   }

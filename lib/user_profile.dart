@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -53,19 +55,8 @@ class _UserProfileState extends State<UserProfile> {
                       style: _textStyle,
                     ),
                     Padding(
-                      padding: EdgeInsets.only(left: 8),
-                      child: Container(
-                        width: 24,
-                        height: 24,
-                        decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          image: DecorationImage(
-                            image: NetworkImage(
-                              signIn.photoUrl,
-                            ),
-                          ),
-                        ),
-                      ),
+                      padding: const EdgeInsets.only(left: 8),
+                      child: _UserAvatar(signIn: signIn, radius: 12),
                     ),
                   ],
                 )
@@ -92,7 +83,7 @@ class _UserProfileState extends State<UserProfile> {
         _menuOverlay = OverlayEntry(builder: (_) => _menu);
         Overlay.of(context).insert(_menuOverlay!);
       } else {
-        signIn.signIn();
+        unawaited(signIn.signIn());
       }
     }
   }
@@ -119,7 +110,8 @@ class _UserProfileState extends State<UserProfile> {
           ),
           child: DecoratedBox(
             decoration: BoxDecoration(
-              color: Theme.of(context).dialogBackgroundColor,
+              color: Theme.of(context).dialogTheme.backgroundColor ??
+                  Theme.of(context).colorScheme.surface,
               borderRadius: BorderRadius.all(Radius.circular(8)),
               border: Border.all(color: Theme.of(context).dividerColor),
             ),
@@ -149,20 +141,7 @@ class _UserProfileState extends State<UserProfile> {
                         ),
                     ],
                   ),
-                  Center(
-                    child: Container(
-                      width: 48,
-                      height: 48,
-                      decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        image: DecorationImage(
-                          image: NetworkImage(
-                            signIn.photoUrl,
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
+                  Center(child: _UserAvatar(signIn: signIn, radius: 24)),
                   Padding(
                     padding: EdgeInsets.only(top: 8),
                     child: Text(signIn.shortUserDescription,
@@ -181,5 +160,32 @@ class _UserProfileState extends State<UserProfile> {
         ),
       ),
     );
+  }
+}
+
+class _UserAvatar extends StatelessWidget {
+  const _UserAvatar({
+    required this.signIn,
+    required this.radius,
+  });
+
+  final SignInManager signIn;
+  final double radius;
+
+  @override
+  Widget build(BuildContext context) {
+    final photoUrl = signIn.photoUrl;
+    return CircleAvatar(
+      radius: radius,
+      backgroundImage: photoUrl.isEmpty ? null : NetworkImage(photoUrl),
+      child: photoUrl.isEmpty ? Text(_initial) : null,
+    );
+  }
+
+  String get _initial {
+    final text = signIn.shortUserDescription.isNotEmpty
+        ? signIn.shortUserDescription
+        : signIn.userEmail;
+    return text.isEmpty ? '?' : text.characters.first.toUpperCase();
   }
 }

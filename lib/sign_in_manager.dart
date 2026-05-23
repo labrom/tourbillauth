@@ -1,17 +1,27 @@
+import 'dart:async';
+
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/foundation.dart';
-import 'package:google_sign_in/google_sign_in.dart';
 
-/// A service provider for user sign-in.
+/// A service provider for the current Firebase Auth session.
+///
+/// This class is independent of the Firebase sign-in provider. Apps that still
+/// use [signIn] must supply [signInHandler] to show their configured sign-in UI.
 class SignInManager extends ChangeNotifier {
-  final GoogleSignIn _googleSignIn;
-  GoogleSignInAccount? _googleSignInAccount;
+  final FirebaseAuth? _firebaseAuth;
+  final FutureOr<void> Function()? _signInHandler;
   User? _firebaseUser;
+  StreamSubscription<User?>? _authStateSubscription;
 
-  SignInManager() : _googleSignIn = GoogleSignIn() {
-    Firebase.initializeApp();
-    FirebaseAuth.instance.authStateChanges().listen((User? user) {
+  SignInManager({
+    FirebaseAuth? firebaseAuth,
+    FutureOr<void> Function()? signInHandler,
+  })  : _firebaseAuth = firebaseAuth ?? FirebaseAuth.instance,
+        _signInHandler = signInHandler {
+    final firebaseAuth = _firebaseAuth!;
+    _firebaseUser = firebaseAuth.currentUser;
+    _authStateSubscription =
+        firebaseAuth.authStateChanges().listen((User? user) {
       if (user != null) {
         _firebaseUser = user;
       } else {
@@ -19,13 +29,11 @@ class SignInManager extends ChangeNotifier {
       }
       notifyListeners();
     });
-
-    // Record Google sign in for direct access to auth headers
-    _googleSignIn.onCurrentUserChanged
-        .listen((GoogleSignInAccount? googleSignInAccount) {
-          _googleSignInAccount = googleSignInAccount;
-    });
   }
+
+  SignInManager._fake()
+      : _firebaseAuth = null,
+        _signInHandler = null;
 
   factory SignInManager.fakeUser({
     required String userId,
@@ -35,15 +43,15 @@ class SignInManager extends ChangeNotifier {
 
   bool get signedIn => _firebaseUser != null;
 
-  /// The user ID for the underlying auth provider (Google).
+  /// The Firebase user ID.
   ///
   /// Throws an exception if no user is signed in.
-  String get userId => _googleSignInAccount!.id;
+  String get userId => _firebaseUser!.uid;
 
   /// The Firebase user ID.
   ///
   /// Throws an exception if no user is signed in.
-  String get firebaseUserUid => _firebaseUser!.uid;
+  String get firebaseUserUid => userId;
 
   /// The user's email address.
   ///
@@ -60,7 +68,7 @@ class SignInManager extends ChangeNotifier {
   /// A short description of the signed-in user.
   ///
   /// Throws an exception if no user is signed in.
-  String get shortUserDescription => _firebaseUser!.displayName ?? '';
+  String get shortUserDescription => _firebaseUser!.displayName ?? userEmail;
 
   /// The signed-in user profile photo URL.
   ///
@@ -68,27 +76,34 @@ class SignInManager extends ChangeNotifier {
   String get photoUrl => _firebaseUser!.photoURL ?? '';
 
   Future<Map<String, String>> get authHeaders async {
-    if (_googleSignInAccount == null) {
-      await FirebaseAuth.instance.signInWithProvider(GoogleAuthProvider());
+    final token = await _firebaseUser!.getIdToken();
+    return {'Authorization': 'Bearer $token'};
+  }
+
+  Future<void> signIn() async {
+    final signInHandler = _signInHandler;
+    if (signInHandler == null) {
+      throw UnsupportedError(
+        'SignInManager requires a signInHandler to start sign-in.',
+      );
     }
-    return _googleSignInAccount!.authHeaders;
+    await signInHandler();
   }
 
-  void signIn() {
-    FirebaseAuth.instance.signInWithProvider(GoogleAuthProvider());
-  }
+  Future<void> signOut() => _firebaseAuth!.signOut();
 
-  void signOut() {
-    FirebaseAuth.instance.signOut();
+  @override
+  void dispose() {
+    _authStateSubscription?.cancel();
+    super.dispose();
   }
 
   void _reset() {
-    _googleSignInAccount = null;
     _firebaseUser = null;
   }
 }
 
-class _FakeSignInManager with ChangeNotifier implements SignInManager {
+class _FakeSignInManager extends SignInManager {
   bool _signedIn;
 
   @override
@@ -97,16 +112,22 @@ class _FakeSignInManager with ChangeNotifier implements SignInManager {
   @override
   final String userEmail;
 
+  final Map<String, String> _authHeaders;
+
   _FakeSignInManager({
     required this.userId,
     required this.userEmail,
-  }) : _signedIn = true;
+    Map<String, String> authHeaders = const {},
+  })  : _authHeaders = authHeaders,
+        _signedIn = false,
+        super._fake();
 
   @override
-  Future<Map<String, String>> get authHeaders => Future.sync(() => {});
+  Future<Map<String, String>> get authHeaders =>
+      Future.sync(() => _authHeaders);
 
   @override
-  String get firebaseUserUid => throw UnimplementedError();
+  String get firebaseUserUid => userId;
 
   @override
   String get photoUrl => '';
@@ -115,13 +136,13 @@ class _FakeSignInManager with ChangeNotifier implements SignInManager {
   String get shortUserDescription => userEmail;
 
   @override
-  signIn() {
+  Future<void> signIn() async {
     _signedIn = true;
     notifyListeners();
   }
 
   @override
-  void signOut() {
+  Future<void> signOut() async {
     _signedIn = false;
     notifyListeners();
   }
@@ -133,21 +154,7 @@ class _FakeSignInManager with ChangeNotifier implements SignInManager {
   String get userDescription => userEmail;
 
   @override
-  User? _firebaseUser;
-
-  @override
-  GoogleSignInAccount? _googleSignInAccount;
-
-  @override
-  GoogleSignIn get _googleSignIn => throw UnimplementedError();
-
-  @override
-  void _onGoogleLogin(GoogleSignInAccount? account) {
-    throw UnimplementedError();
-  }
-
-  @override
   void _reset() {
-    throw UnimplementedError();
+    _signedIn = false;
   }
 }

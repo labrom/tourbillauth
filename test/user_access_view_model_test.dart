@@ -326,8 +326,10 @@ void main() {
     expect(viewModel.listInvites().length, equals(2));
     expect(users[0].userEmail, equals('user1@my.org'));
     expect(users[0].roles.first, equals('admin'));
-    expect(invites[1].userEmail, equals('user2@my.org'));
-    expect(invites[1].roles.first, equals('guest'));
+    final user2Invite = invites.singleWhere(
+      (invite) => invite.userEmail == 'user2@my.org',
+    );
+    expect(user2Invite.roles.first, equals('guest'));
   });
   testWidgets('remove users/invites', (tester) async {
     final fakeFirestoreWrapper = FakeFirestoreWrapper();

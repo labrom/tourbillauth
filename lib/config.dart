@@ -14,10 +14,14 @@ String usersCollectionName(_) => 'users';
 String rolesFieldName(_) => 'roles';
 
 final authProviders = <AuthProvider>[
-  // EmailAuthProvider(),
   GoogleProvider(
     // clientId not used on Android and iOS (iOSPreferPlist is true for iOS)
     clientId: '',
     iOSPreferPlist: true,
   ),
 ];
+
+List<AuthProvider> defaultAuthProviders({
+  bool enableEmailPasswordAuth = false,
+}) =>
+    [if (enableEmailPasswordAuth) EmailAuthProvider(), ...authProviders];
