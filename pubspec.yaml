@@ -13,9 +13,9 @@ dependencies:
   firebase_ui_oauth_google:
   flutter:
     sdk: flutter
-  flutter_riverpod: ^3.0.3
+  flutter_riverpod: ^3.3.2
   http:
-  riverpod_annotation: ^3.0.3
+  riverpod_annotation: ^4.0.3
   tourbillon:
     git:
       https://github.com/labrom/tourbillon.git
@@ -27,7 +27,7 @@ dev_dependencies:
   fake_cloud_firestore:
   flutter_lints: ^1.0.0
   mockito:
-  riverpod_generator: ^3.0.3
+  riverpod_generator: ^4.0.4
 
 flutter:
   uses-material-design: true
