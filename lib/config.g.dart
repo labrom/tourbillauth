@@ -10,13 +10,13 @@ part of 'config.dart';
 // ignore_for_file: type=lint, type=warning
 
 @ProviderFor(usersFirestoreDatabaseName)
-const usersFirestoreDatabaseNameProvider =
+final usersFirestoreDatabaseNameProvider =
     UsersFirestoreDatabaseNameProvider._();
 
 final class UsersFirestoreDatabaseNameProvider
     extends $FunctionalProvider<String?, String?, String?>
     with $Provider<String?> {
-  const UsersFirestoreDatabaseNameProvider._()
+  UsersFirestoreDatabaseNameProvider._()
       : super(
           from: null,
           argument: null,
@@ -53,11 +53,11 @@ String _$usersFirestoreDatabaseNameHash() =>
     r'8a2ed00b632cb4161f1794c88777d4c5764afcf8';
 
 @ProviderFor(usersCollectionName)
-const usersCollectionNameProvider = UsersCollectionNameProvider._();
+final usersCollectionNameProvider = UsersCollectionNameProvider._();
 
 final class UsersCollectionNameProvider
     extends $FunctionalProvider<String, String, String> with $Provider<String> {
-  const UsersCollectionNameProvider._()
+  UsersCollectionNameProvider._()
       : super(
           from: null,
           argument: null,
@@ -94,11 +94,11 @@ String _$usersCollectionNameHash() =>
     r'3516ca416b02764e8ecacdb85d8ff4a35dd15451';
 
 @ProviderFor(rolesFieldName)
-const rolesFieldNameProvider = RolesFieldNameProvider._();
+final rolesFieldNameProvider = RolesFieldNameProvider._();
 
 final class RolesFieldNameProvider
     extends $FunctionalProvider<String, String, String> with $Provider<String> {
-  const RolesFieldNameProvider._()
+  RolesFieldNameProvider._()
       : super(
           from: null,
           argument: null,

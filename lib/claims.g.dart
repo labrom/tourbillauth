@@ -10,11 +10,11 @@ part of 'claims.dart';
 // ignore_for_file: type=lint, type=warning
 
 @ProviderFor(AutoSetClaims)
-const autoSetClaimsProvider = AutoSetClaimsProvider._();
+final autoSetClaimsProvider = AutoSetClaimsProvider._();
 
 final class AutoSetClaimsProvider
     extends $NotifierProvider<AutoSetClaims, bool> {
-  const AutoSetClaimsProvider._()
+  AutoSetClaimsProvider._()
       : super(
           from: null,
           argument: null,
@@ -47,22 +47,21 @@ abstract class _$AutoSetClaims extends $Notifier<bool> {
   bool build();
   @$mustCallSuper
   @override
-  void runBuild() {
-    final created = build();
+  WhenComplete runBuild() {
     final ref = this.ref as $Ref<bool, bool>;
     final element = ref.element as $ClassProviderElement<
         AnyNotifier<bool, bool>, bool, Object?, Object?>;
-    element.handleValue(ref, created);
+    return element.handleCreate(ref, build);
   }
 }
 
 @ProviderFor(setClaims)
-const setClaimsProvider = SetClaimsFamily._();
+final setClaimsProvider = SetClaimsFamily._();
 
 final class SetClaimsProvider
     extends $FunctionalProvider<AsyncValue<bool>, bool, FutureOr<bool>>
     with $FutureModifier<bool>, $FutureProvider<bool> {
-  const SetClaimsProvider._(
+  SetClaimsProvider._(
       {required SetClaimsFamily super.from, required String super.argument})
       : super(
           retry: null,
@@ -111,7 +110,7 @@ String _$setClaimsHash() => r'e400a82f24a531e60b7bf1cf7f17c440dd19c9e8';
 
 final class SetClaimsFamily extends $Family
     with $FunctionalFamilyOverride<FutureOr<bool>, String> {
-  const SetClaimsFamily._()
+  SetClaimsFamily._()
       : super(
           retry: null,
           name: r'setClaimsProvider',
@@ -130,12 +129,12 @@ final class SetClaimsFamily extends $Family
 }
 
 @ProviderFor(resetClaims)
-const resetClaimsProvider = ResetClaimsProvider._();
+final resetClaimsProvider = ResetClaimsProvider._();
 
 final class ResetClaimsProvider
     extends $FunctionalProvider<AsyncValue<bool>, bool, FutureOr<bool>>
     with $FutureModifier<bool>, $FutureProvider<bool> {
-  const ResetClaimsProvider._()
+  ResetClaimsProvider._()
       : super(
           from: null,
           argument: null,

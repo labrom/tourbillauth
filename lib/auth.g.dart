@@ -10,12 +10,12 @@ part of 'auth.dart';
 // ignore_for_file: type=lint, type=warning
 
 @ProviderFor(firebaseAuth)
-const firebaseAuthProvider = FirebaseAuthProvider._();
+final firebaseAuthProvider = FirebaseAuthProvider._();
 
 final class FirebaseAuthProvider
     extends $FunctionalProvider<FirebaseAuth, FirebaseAuth, FirebaseAuth>
     with $Provider<FirebaseAuth> {
-  const FirebaseAuthProvider._()
+  FirebaseAuthProvider._()
       : super(
           from: null,
           argument: null,
@@ -51,12 +51,12 @@ final class FirebaseAuthProvider
 String _$firebaseAuthHash() => r'8f9dd590959e35932285fca37913676bd13a02fd';
 
 @ProviderFor(authStateChanges)
-const authStateChangesProvider = AuthStateChangesProvider._();
+final authStateChangesProvider = AuthStateChangesProvider._();
 
 final class AuthStateChangesProvider
     extends $FunctionalProvider<AsyncValue<User?>, User?, Stream<User?>>
     with $FutureModifier<User?>, $StreamProvider<User?> {
-  const AuthStateChangesProvider._()
+  AuthStateChangesProvider._()
       : super(
           from: null,
           argument: null,
@@ -84,13 +84,13 @@ final class AuthStateChangesProvider
 String _$authStateChangesHash() => r'ed73bb63cae92e791c80e19c01a8eb421d09a663';
 
 @ProviderFor(authStateChangesStream)
-const authStateChangesStreamProvider = AuthStateChangesStreamProvider._();
+final authStateChangesStreamProvider = AuthStateChangesStreamProvider._();
 
 final class AuthStateChangesStreamProvider extends $FunctionalProvider<
     Raw<Stream<User?>>,
     Raw<Stream<User?>>,
     Raw<Stream<User?>>> with $Provider<Raw<Stream<User?>>> {
-  const AuthStateChangesStreamProvider._()
+  AuthStateChangesStreamProvider._()
       : super(
           from: null,
           argument: null,
@@ -128,12 +128,12 @@ String _$authStateChangesStreamHash() =>
     r'c0c467ed5d1134c3fc143ab915ea641e8ae30e17';
 
 @ProviderFor(idTokenChanges)
-const idTokenChangesProvider = IdTokenChangesProvider._();
+final idTokenChangesProvider = IdTokenChangesProvider._();
 
 final class IdTokenChangesProvider
     extends $FunctionalProvider<AsyncValue<User?>, User?, Stream<User?>>
     with $FutureModifier<User?>, $StreamProvider<User?> {
-  const IdTokenChangesProvider._()
+  IdTokenChangesProvider._()
       : super(
           from: null,
           argument: null,
@@ -161,11 +161,11 @@ final class IdTokenChangesProvider
 String _$idTokenChangesHash() => r'a4c27f4409b61d3a4c05ef168634d042bbeb20e1';
 
 @ProviderFor(user)
-const userProvider = UserProvider._();
+final userProvider = UserProvider._();
 
 final class UserProvider extends $FunctionalProvider<User?, User?, User?>
     with $Provider<User?> {
-  const UserProvider._()
+  UserProvider._()
       : super(
           from: null,
           argument: null,
@@ -201,12 +201,12 @@ final class UserProvider extends $FunctionalProvider<User?, User?, User?>
 String _$userHash() => r'd5a5fa8e9a2f0a8abf75ec979c1f15e7ad52780c';
 
 @ProviderFor(userId)
-const userIdProvider = UserIdProvider._();
+final userIdProvider = UserIdProvider._();
 
 final class UserIdProvider
     extends $FunctionalProvider<String?, String?, String?>
     with $Provider<String?> {
-  const UserIdProvider._()
+  UserIdProvider._()
       : super(
           from: null,
           argument: null,
@@ -242,12 +242,12 @@ final class UserIdProvider
 String _$userIdHash() => r'db1cd44c22255f47c715fb0f20d437e42db6f179';
 
 @ProviderFor(appUser)
-const appUserProvider = AppUserProvider._();
+final appUserProvider = AppUserProvider._();
 
 final class AppUserProvider extends $FunctionalProvider<AsyncValue<AppUser?>,
         AppUser?, FutureOr<AppUser?>>
     with $FutureModifier<AppUser?>, $FutureProvider<AppUser?> {
-  const AppUserProvider._()
+  AppUserProvider._()
       : super(
           from: null,
           argument: null,

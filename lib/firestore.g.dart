@@ -10,11 +10,11 @@ part of 'firestore.dart';
 // ignore_for_file: type=lint, type=warning
 
 @ProviderFor(userFirestore)
-const userFirestoreProvider = UserFirestoreProvider._();
+final userFirestoreProvider = UserFirestoreProvider._();
 
 final class UserFirestoreProvider extends $FunctionalProvider<FirebaseFirestore,
     FirebaseFirestore, FirebaseFirestore> with $Provider<FirebaseFirestore> {
-  const UserFirestoreProvider._()
+  UserFirestoreProvider._()
       : super(
           from: null,
           argument: null,
@@ -51,14 +51,14 @@ final class UserFirestoreProvider extends $FunctionalProvider<FirebaseFirestore,
 String _$userFirestoreHash() => r'e817a9db592a0cd7a22bc02b4df30155e5665fde';
 
 @ProviderFor(userFirestoreDocumentReference)
-const userFirestoreDocumentReferenceProvider =
+final userFirestoreDocumentReferenceProvider =
     UserFirestoreDocumentReferenceProvider._();
 
 final class UserFirestoreDocumentReferenceProvider extends $FunctionalProvider<
     DocumentReference<Object?>,
     DocumentReference<Object?>,
     DocumentReference<Object?>> with $Provider<DocumentReference<Object?>> {
-  const UserFirestoreDocumentReferenceProvider._()
+  UserFirestoreDocumentReferenceProvider._()
       : super(
           from: null,
           argument: null,
@@ -96,11 +96,11 @@ String _$userFirestoreDocumentReferenceHash() =>
     r'2a0ae86dee2933a6fe396549423b200403153a9f';
 
 @ProviderFor(userSpacePath)
-const userSpacePathProvider = UserSpacePathFamily._();
+final userSpacePathProvider = UserSpacePathFamily._();
 
 final class UserSpacePathProvider
     extends $FunctionalProvider<String, String, String> with $Provider<String> {
-  const UserSpacePathProvider._(
+  UserSpacePathProvider._(
       {required UserSpacePathFamily super.from, required String super.argument})
       : super(
           retry: null,
@@ -157,7 +157,7 @@ String _$userSpacePathHash() => r'36df06e7a4afe9dc72d52740e47564a5c91130f8';
 
 final class UserSpacePathFamily extends $Family
     with $FunctionalFamilyOverride<String, String> {
-  const UserSpacePathFamily._()
+  UserSpacePathFamily._()
       : super(
           retry: null,
           name: r'userSpacePathProvider',
@@ -176,7 +176,7 @@ final class UserSpacePathFamily extends $Family
 }
 
 @ProviderFor(userSpaceCollectionReference)
-const userSpaceCollectionReferenceProvider =
+final userSpaceCollectionReferenceProvider =
     UserSpaceCollectionReferenceFamily._();
 
 final class UserSpaceCollectionReferenceProvider extends $FunctionalProvider<
@@ -184,7 +184,7 @@ final class UserSpaceCollectionReferenceProvider extends $FunctionalProvider<
         CollectionReference<Map<String, dynamic>>,
         CollectionReference<Map<String, dynamic>>>
     with $Provider<CollectionReference<Map<String, dynamic>>> {
-  const UserSpaceCollectionReferenceProvider._(
+  UserSpaceCollectionReferenceProvider._(
       {required UserSpaceCollectionReferenceFamily super.from,
       required String super.argument})
       : super(
@@ -248,7 +248,7 @@ final class UserSpaceCollectionReferenceFamily extends $Family
     with
         $FunctionalFamilyOverride<CollectionReference<Map<String, dynamic>>,
             String> {
-  const UserSpaceCollectionReferenceFamily._()
+  UserSpaceCollectionReferenceFamily._()
       : super(
           retry: null,
           name: r'userSpaceCollectionReferenceProvider',
@@ -267,14 +267,14 @@ final class UserSpaceCollectionReferenceFamily extends $Family
 }
 
 @ProviderFor(userSpaceDocumentReference)
-const userSpaceDocumentReferenceProvider = UserSpaceDocumentReferenceFamily._();
+final userSpaceDocumentReferenceProvider = UserSpaceDocumentReferenceFamily._();
 
 final class UserSpaceDocumentReferenceProvider extends $FunctionalProvider<
         DocumentReference<Map<String, dynamic>>,
         DocumentReference<Map<String, dynamic>>,
         DocumentReference<Map<String, dynamic>>>
     with $Provider<DocumentReference<Map<String, dynamic>>> {
-  const UserSpaceDocumentReferenceProvider._(
+  UserSpaceDocumentReferenceProvider._(
       {required UserSpaceDocumentReferenceFamily super.from,
       required String super.argument})
       : super(
@@ -338,7 +338,7 @@ final class UserSpaceDocumentReferenceFamily extends $Family
     with
         $FunctionalFamilyOverride<DocumentReference<Map<String, dynamic>>,
             String> {
-  const UserSpaceDocumentReferenceFamily._()
+  UserSpaceDocumentReferenceFamily._()
       : super(
           retry: null,
           name: r'userSpaceDocumentReferenceProvider',
@@ -357,7 +357,7 @@ final class UserSpaceDocumentReferenceFamily extends $Family
 }
 
 @ProviderFor(userSpaceDocument)
-const userSpaceDocumentProvider = UserSpaceDocumentFamily._();
+final userSpaceDocumentProvider = UserSpaceDocumentFamily._();
 
 final class UserSpaceDocumentProvider extends $FunctionalProvider<
         AsyncValue<DocumentSnapshot<Map<String, dynamic>>>,
@@ -366,7 +366,7 @@ final class UserSpaceDocumentProvider extends $FunctionalProvider<
     with
         $FutureModifier<DocumentSnapshot<Map<String, dynamic>>>,
         $StreamProvider<DocumentSnapshot<Map<String, dynamic>>> {
-  const UserSpaceDocumentProvider._(
+  UserSpaceDocumentProvider._(
       {required UserSpaceDocumentFamily super.from,
       required String super.argument})
       : super(
@@ -419,7 +419,7 @@ final class UserSpaceDocumentFamily extends $Family
     with
         $FunctionalFamilyOverride<
             Stream<DocumentSnapshot<Map<String, dynamic>>>, String> {
-  const UserSpaceDocumentFamily._()
+  UserSpaceDocumentFamily._()
       : super(
           retry: null,
           name: r'userSpaceDocumentProvider',
@@ -438,7 +438,7 @@ final class UserSpaceDocumentFamily extends $Family
 }
 
 @ProviderFor(userSpaceQueryStream)
-const userSpaceQueryStreamProvider = UserSpaceQueryStreamFamily._();
+final userSpaceQueryStreamProvider = UserSpaceQueryStreamFamily._();
 
 final class UserSpaceQueryStreamProvider extends $FunctionalProvider<
         AsyncValue<QuerySnapshot<Map<String, dynamic>>>,
@@ -447,7 +447,7 @@ final class UserSpaceQueryStreamProvider extends $FunctionalProvider<
     with
         $FutureModifier<QuerySnapshot<Map<String, dynamic>>>,
         $StreamProvider<QuerySnapshot<Map<String, dynamic>>> {
-  const UserSpaceQueryStreamProvider._(
+  UserSpaceQueryStreamProvider._(
       {required UserSpaceQueryStreamFamily super.from,
       required (
         String, {
@@ -513,7 +513,7 @@ final class UserSpaceQueryStreamFamily extends $Family
               String, {
               OrderBy? orderBy,
             })> {
-  const UserSpaceQueryStreamFamily._()
+  UserSpaceQueryStreamFamily._()
       : super(
           retry: null,
           name: r'userSpaceQueryStreamProvider',
@@ -536,7 +536,7 @@ final class UserSpaceQueryStreamFamily extends $Family
 }
 
 @ProviderFor(userSpaceQueryDocumentList)
-const userSpaceQueryDocumentListProvider = UserSpaceQueryDocumentListFamily._();
+final userSpaceQueryDocumentListProvider = UserSpaceQueryDocumentListFamily._();
 
 final class UserSpaceQueryDocumentListProvider extends $FunctionalProvider<
         AsyncValue<List<QueryDocumentSnapshot<Map<String, dynamic>>>>,
@@ -545,7 +545,7 @@ final class UserSpaceQueryDocumentListProvider extends $FunctionalProvider<
     with
         $FutureModifier<List<QueryDocumentSnapshot<Map<String, dynamic>>>>,
         $FutureProvider<List<QueryDocumentSnapshot<Map<String, dynamic>>>> {
-  const UserSpaceQueryDocumentListProvider._(
+  UserSpaceQueryDocumentListProvider._(
       {required UserSpaceQueryDocumentListFamily super.from,
       required (
         String, {
@@ -612,7 +612,7 @@ final class UserSpaceQueryDocumentListFamily extends $Family
               String, {
               OrderBy? orderBy,
             })> {
-  const UserSpaceQueryDocumentListFamily._()
+  UserSpaceQueryDocumentListFamily._()
       : super(
           retry: null,
           name: r'userSpaceQueryDocumentListProvider',
