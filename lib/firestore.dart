@@ -12,11 +12,20 @@ FirebaseFirestore userFirestore(Ref ref) => ref.read(firebaseFirestoreProvider(
 
 @riverpod
 DocumentReference userFirestoreDocumentReference(Ref ref) => userFirestore(ref)
-    .doc('${usersCollectionName(ref)}/${ref.watch(userIdProvider)}');
+    .doc('${usersCollectionName(ref)}/${_requireUserId(ref)}');
 
 @riverpod
 String userSpacePath(Ref ref, String path) =>
-    '${usersCollectionName(ref)}/${userId(ref)}/$path';
+    '${usersCollectionName(ref)}/${_requireUserId(ref)}/$path';
+
+String _requireUserId(Ref ref) {
+  final userId = ref.watch(userIdProvider);
+  if (userId == null) {
+    throw StateError(
+        'User-scoped Firestore access requires an authenticated user');
+  }
+  return userId;
+}
 
 @riverpod
 CollectionReference<Map<String, dynamic>> userSpaceCollectionReference(

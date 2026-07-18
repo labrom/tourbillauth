@@ -198,7 +198,7 @@ final class UserProvider extends $FunctionalProvider<User?, User?, User?>
   }
 }
 
-String _$userHash() => r'd5a5fa8e9a2f0a8abf75ec979c1f15e7ad52780c';
+String _$userHash() => r'b103ec5038463d98e7dde399de205c954b785e0f';
 
 @ProviderFor(userId)
 final userIdProvider = UserIdProvider._();
@@ -272,4 +272,4 @@ final class AppUserProvider extends $FunctionalProvider<AsyncValue<AppUser?>,
   }
 }
 
-String _$appUserHash() => r'bcc6a8181452e649b371074fe91fd6289a349170';
+String _$appUserHash() => r'ce73a84fd67887dbcaeb391fa6cf23a3cdc4d970';

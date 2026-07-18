@@ -93,7 +93,7 @@ final class UserFirestoreDocumentReferenceProvider extends $FunctionalProvider<
 }
 
 String _$userFirestoreDocumentReferenceHash() =>
-    r'2a0ae86dee2933a6fe396549423b200403153a9f';
+    r'7fe0d5637042e4ea4e4ed99b8f90c846ff8c3431';
 
 @ProviderFor(userSpacePath)
 final userSpacePathProvider = UserSpacePathFamily._();
@@ -153,7 +153,7 @@ final class UserSpacePathProvider
   }
 }
 
-String _$userSpacePathHash() => r'36df06e7a4afe9dc72d52740e47564a5c91130f8';
+String _$userSpacePathHash() => r'8b416b5b44b423f982c8044e38daf8cab779f47c';
 
 final class UserSpacePathFamily extends $Family
     with $FunctionalFamilyOverride<String, String> {

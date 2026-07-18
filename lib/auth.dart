@@ -23,7 +23,7 @@ Stream<User?> idTokenChanges(Ref ref) =>
     ref.watch(firebaseAuthProvider).idTokenChanges();
 
 @riverpod
-User? user(Ref ref) => ref.watch(firebaseAuthProvider).currentUser;
+User? user(Ref ref) => ref.watch(authStateChangesProvider).value;
 
 @riverpod
 String? userId(Ref ref) => ref.watch(userProvider)?.uid;
@@ -31,23 +31,19 @@ String? userId(Ref ref) => ref.watch(userProvider)?.uid;
 @riverpod
 Future<AppUser?> appUser(Ref ref) async {
   return ref.watch(authStateChangesProvider).when(
-      data: (user) async {
-        if (user != null) {
+        data: (user) async {
+          if (user == null) return null;
+
           final doc = userFirestoreDocumentReference(ref);
           final snapshot = await doc.get();
           if (!snapshot.exists) {
-            final user = ref.watch(userProvider);
-            if (user != null) {
-              doc.set({
-                'email': user.email,
-              }, SetOptions(merge: true));
-            }
+            await doc.set({
+              'email': user.email,
+            }, SetOptions(merge: true));
           }
           return AppUser(uid: user.uid, email: user.email ?? '');
-        } else {
-          return null;
-        }
-      },
-      loading: () => null,
-      error: (err, stack) => null);
+        },
+        loading: () => null,
+        error: (err, stack) => null,
+      );
 }
