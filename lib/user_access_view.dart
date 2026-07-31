@@ -22,21 +22,19 @@ class UserAccessView extends StatelessWidget {
   const UserAccessView({
     required this.viewModel,
     this.roles,
-    Key? key,
+    super.key,
   })  : resource = null,
-        allowEmailsForResource = false,
-        super(key: key);
+        allowEmailsForResource = false;
 
   const UserAccessView.forResource(
     String resource, {
     required this.viewModel,
     bool allowEmails = false,
     this.roles,
-    Key? key,
+    super.key,
     // ignore: prefer_initializing_formals
   })  : resource = resource,
-        allowEmailsForResource = allowEmails,
-        super(key: key);
+        allowEmailsForResource = allowEmails;
 
   @override
   Widget build(BuildContext context) => ChangeNotifierProvider.value(

@@ -24,8 +24,8 @@ class UserProfile extends StatefulWidget implements PreferredSizeWidget {
 
   const UserProfile({
     this.settingsRouteName,
-    Key? key,
-  }) : super(key: key);
+    super.key,
+  });
 
   @override
   State<StatefulWidget> createState() => _UserProfileState();
@@ -150,8 +150,8 @@ class _UserProfileState extends State<UserProfile> {
                   Text(signIn.userEmail,
                       style: Theme.of(context).textTheme.bodySmall),
                   TextButton(
-                    child: Text(libloc(context).signOutButtonLabel),
                     onPressed: _signOut,
+                    child: Text(libloc(context).signOutButtonLabel),
                   ),
                 ],
               ),

@@ -20,12 +20,13 @@ dependencies:
     git:
       https://github.com/labrom/tourbillon.git
 
+  provider:
 dev_dependencies:
   flutter_test:
     sdk: flutter
   build_runner:
   fake_cloud_firestore:
-  flutter_lints: ^1.0.0
+  flutter_lints: ^6.0.0
   mockito:
   riverpod_generator: ^4.0.4
 

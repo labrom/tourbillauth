@@ -121,11 +121,11 @@ class AccountRepository extends SignInAwareRepository {
 
   void convertInvite() {
     if (!checkSignIn()) return;
+    final firestore = firestoreProvider(_context).instance;
     if (_rolesLoaded) {
       log.i('User $userId already exists');
       // Delete invite doc (although this could be done in a Firebase function)
-      firestoreProvider(_context)
-          .instance
+      firestore
           .collection(inviteCollectionName)
           .where('email', isEqualTo: userEmail)
           .get()
@@ -137,8 +137,7 @@ class AccountRepository extends SignInAwareRepository {
       });
       return;
     }
-    firestoreProvider(_context)
-        .instance
+    firestore
         .collection(inviteCollectionName)
         .where('email', isEqualTo: userEmail)
         .get()
@@ -146,11 +145,7 @@ class AccountRepository extends SignInAwareRepository {
       if (snapshot.docs.isNotEmpty) {
         // Assume there's only one invite
         final inviteDoc = snapshot.docs.first;
-        firestoreProvider(_context)
-            .instance
-            .collection(userCollectionName)
-            .doc(userId!)
-            .set({
+        firestore.collection(userCollectionName).doc(userId!).set({
           'email': userEmail,
           rolesFieldName: inviteDoc.getListOf(rolesFieldName),
           'last-updated': DateTime.now(),
@@ -164,8 +159,8 @@ class AccountRepository extends SignInAwareRepository {
 
   Future<void> _loadSettings() async {
     _settings.clear();
-    await firestoreProvider(_context)
-        .instance
+    final firestore = firestoreProvider(_context).instance;
+    await firestore
         .collection(userSettingCollectionName)
         .doc(userId)
         .get()

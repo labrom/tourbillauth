@@ -5,13 +5,13 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 part 'config.g.dart';
 
 @riverpod
-String? usersFirestoreDatabaseName(_) => null;
+String? usersFirestoreDatabaseName(Ref ref) => null;
 
 @riverpod
-String usersCollectionName(_) => 'users';
+String usersCollectionName(Ref ref) => 'users';
 
 @riverpod
-String rolesFieldName(_) => 'roles';
+String rolesFieldName(Ref ref) => 'roles';
 
 final authProviders = <AuthProvider>[
   GoogleProvider(

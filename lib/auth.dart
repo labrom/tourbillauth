@@ -8,7 +8,7 @@ import 'model.dart';
 part 'auth.g.dart';
 
 @riverpod
-FirebaseAuth firebaseAuth(_) => FirebaseAuth.instance;
+FirebaseAuth firebaseAuth(Ref ref) => FirebaseAuth.instance;
 
 @riverpod
 Stream<User?> authStateChanges(Ref ref) =>

@@ -27,14 +27,14 @@ class LibLocalizations extends BaseLocalizations {
         fr: 'Utilisateurs',
       },
       'userResourceAccessViewTitle': {
-        en: 'User access to {}',
-        fr: 'Accès utilisateurs à {}',
+        en: 'User access to {resource}',
+        fr: 'Accès utilisateurs à {resource}',
       },
     },
     builder: (locale, values) => LibLocalizations._(locale, values),
   );
 
-  LibLocalizations._(locale, values) : super(locale, values);
+  LibLocalizations._(super.locale, super.values);
 
   String get accountSettingsMenu => get('accountSettingsMenu');
   String get searchUserLabel => get('searchUserLabel');
@@ -42,5 +42,5 @@ class LibLocalizations extends BaseLocalizations {
   String get signOutButtonLabel => get('signOutButtonLabel');
   String get userAccessViewTitle => get('userAccessViewTitle');
   String userResourceAccessViewTitle(String resource) =>
-      get('userResourceAccessViewTitle').withParam(resource);
+      get('userResourceAccessViewTitle').withParams({'resource': resource});
 }

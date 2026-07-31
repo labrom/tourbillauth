@@ -16,8 +16,8 @@ class UserSelector extends StatelessWidget {
   const UserSelector(
     this.viewModel, {
     required this.onUserSelected,
-    Key? key,
-  }) : super(key: key);
+    super.key,
+  });
 
   @override
   Widget build(BuildContext context) {
