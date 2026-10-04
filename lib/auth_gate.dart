@@ -1,10 +1,10 @@
-import 'package:firebase_auth/firebase_auth.dart' show User;
-import 'package:firebase_ui_auth/firebase_ui_auth.dart';
-import 'package:flutter/widgets.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-
 import 'auth.dart';
 import 'config.dart';
+import 'package:firebase_auth/firebase_auth.dart' show User;
+import 'package:firebase_ui_auth/firebase_ui_auth.dart';
+
+import 'package:flutter/widgets.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class AuthGate extends ConsumerWidget {
   const AuthGate({

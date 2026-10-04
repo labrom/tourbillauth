@@ -1,7 +1,7 @@
-import 'package:flutter/widgets.dart';
-import 'package:provider/provider.dart';
-
 import 'model.dart';
+import 'package:flutter/widgets.dart';
+
+import 'package:provider/provider.dart';
 import 'user_directory.dart';
 
 /// A view model for searching users.

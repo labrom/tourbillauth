@@ -1,9 +1,9 @@
-import 'package:flutter/widgets.dart';
-import 'package:provider/provider.dart';
-import 'package:tourbillon/firestore.dart';
-
 import 'account_repository.dart';
 import 'model.dart';
+import 'package:flutter/widgets.dart';
+
+import 'package:provider/provider.dart';
+import 'package:tourbillon/firestore.dart';
 import 'sign_in_aware_repository.dart';
 import 'sign_in_manager.dart';
 

@@ -1,8 +1,8 @@
+import 'auth.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import 'auth.dart';
+import 'package:material_ui/material_ui.dart';
 
 /// A button that displays the current user's profile photo or initial.
 ///

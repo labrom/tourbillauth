@@ -1,11 +1,11 @@
+import 'model.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/widgets.dart';
 import 'package:tourbillon/cache.dart';
 import 'package:tourbillon/data_provider.dart';
 import 'package:tourbillon/firestore.dart';
-import 'package:tourbillon/log.dart';
 
-import 'model.dart';
+import 'package:tourbillon/log.dart';
 import 'user_selector_model.dart';
 
 /// A view model that allows to manage the app's users.
